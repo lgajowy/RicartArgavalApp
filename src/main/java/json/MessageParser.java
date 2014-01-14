@@ -1,15 +1,32 @@
 package json;
 
-public class MessageParser extends Parser {
-    public MessageParser(String pathToJSONFile) {
-        super(pathToJSONFile);
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+public class MessageParser extends JSONParser {
+    private JSONObject parsedObject;
+    private Message parsedMsg;
+
+    public MessageParser(String jsonData) {
+        super();
+        try {
+            parsedObject = (JSONObject) parse(jsonData);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
-    public long getClockValue() {
-        return (Long)parsedObject.get("clock");
+    private int getClockValue() {
+        return Integer.parseInt((String) parsedObject.get("clock"));
     }
 
-    public String getMessageType() {
+    private String getMessageType() {
         return (String) parsedObject.get("type");
+    }
+
+    public Message getParsedMessage() {
+        return new Message(getClockValue(), getMessageType());
+
     }
 }

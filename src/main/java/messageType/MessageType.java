@@ -1,5 +1,5 @@
 package messageType;
 
 public enum MessageType {
-    ok, order
+    ok, order, unknown;
 }

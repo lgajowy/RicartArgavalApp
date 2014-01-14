@@ -1,27 +1,35 @@
 package json;
 
+import com.google.common.base.Enums;
+import com.google.common.base.Optional;
+import javafx.util.StringConverter;
 import messageType.MessageType;
 import org.json.simple.JSONObject;
 
+import java.awt.*;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class Message extends JSONObject {
+public class Message {
+
+    JSONObject jsonMsg;
 
     public Message(int clockValue, MessageType type) {
-        super();
-        this.put("clock", clockValue);
-        this.put("type", type.toString());
+        jsonMsg = new JSONObject();
+        jsonMsg.put("clock", clockValue);
+        jsonMsg.put("type", type.toString());
     }
 
-    public void writeToFile(String filePath) {
-        try {
-            FileWriter file = new FileWriter(filePath);
-            file.write(this.toJSONString());
-            file.flush();
-            file.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public Message(int clockValue, String type) {
+        this(clockValue, Enums.getIfPresent(MessageType.class, type).or(MessageType.unknown));
+    }
+
+    public int getClockValue() {
+        return (Integer) jsonMsg.get("clock");
+    }
+
+    public MessageType getMessageType() {
+        String typeFieldFromJsonMessage = (String) jsonMsg.get("type");
+        return Enums.getIfPresent(MessageType.class, typeFieldFromJsonMessage).or(MessageType.unknown);
     }
 }
