@@ -1,14 +1,8 @@
 package json;
 
 import com.google.common.base.Enums;
-import com.google.common.base.Optional;
-import javafx.util.StringConverter;
-import messageType.MessageType;
+import json.utils.MessageType;
 import org.json.simple.JSONObject;
-
-import java.awt.*;
-import java.io.FileWriter;
-import java.io.IOException;
 
 public class Message {
 

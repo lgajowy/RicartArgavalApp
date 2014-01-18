@@ -1,7 +1,7 @@
 package json;
 
 import junit.framework.TestCase;
-import messageType.MessageType;
+import json.utils.MessageType;
 import org.junit.Test;
 
 public class MessageTest  extends TestCase {

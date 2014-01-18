@@ -6,7 +6,6 @@ import org.json.simple.parser.ParseException;
 
 public class MessageParser extends JSONParser {
     private JSONObject parsedObject;
-    private Message parsedMsg;
 
     public MessageParser(String jsonData) {
         super();
