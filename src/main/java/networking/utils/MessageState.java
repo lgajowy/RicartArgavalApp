@@ -1,25 +1,11 @@
 package networking.utils;
 
 public enum MessageState {
-    noMessage, ongoingOneliner, started, ongoing, ended, unknown;
+    noMessage, oneliner, started, ongoing, ended;
 
-    public static MessageState determineMessageState(String line, MessageState previousState) {
-        int indexOfLeftBracket = line.lastIndexOf("{");
-        int indexOfRightBracket = line.indexOf("}", indexOfLeftBracket);
+    public static MessageState determineMessageState(int indexOfLeftBracket, int indexOfRightBracket, MessageState previousState) {
 
         switch (previousState) {
-            case noMessage:
-            case ongoingOneliner:
-            case unknown:
-                if (indexOfLeftBracket != -1) {
-                    if (indexOfRightBracket != -1) {
-                        return ongoingOneliner;
-                    } else {
-                        return started;
-                    }
-                } else {
-                    return noMessage;
-                }
             case started:
                 if (indexOfRightBracket != -1) {
                     return ended;
@@ -32,14 +18,20 @@ public enum MessageState {
                 } else {
                     return ongoing;
                 }
+            case noMessage:
+            case oneliner:
             case ended:
                 if (indexOfLeftBracket != -1) {
-                    return started;
+                    if (indexOfRightBracket != -1) {
+                        return oneliner;
+                    } else {
+                        return started;
+                    }
                 } else {
                     return noMessage;
                 }
             default:
-                return unknown;
+                return noMessage;
         }
     }
 }
