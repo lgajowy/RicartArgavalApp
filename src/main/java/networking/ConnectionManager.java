@@ -9,16 +9,16 @@ import java.util.concurrent.Executors;
 
 public class ConnectionManager {
 
-    private ExecutorService clientThreadExecutorService;
-    private HashMap<String, ClientThread> currentlyRunningClients;
+    private ExecutorService messageReaderThreadExecutorService;
+    private HashMap<String, CommunicationChannel> activeCommunicationChannels;
 
     private ServerSocket socket;
     private boolean isWorking;
 
-
     public ConnectionManager(int portToListenOn, int expectedClientsAmount) {
-        clientThreadExecutorService = Executors.newFixedThreadPool(expectedClientsAmount);
-        currentlyRunningClients = new HashMap<String, ClientThread>();
+        messageReaderThreadExecutorService = Executors.newFixedThreadPool(expectedClientsAmount);
+        activeCommunicationChannels = new HashMap<String, CommunicationChannel>();
+
         try {
             socket = new ServerSocket(portToListenOn);
             isWorking = true;
@@ -31,18 +31,11 @@ public class ConnectionManager {
     private void listenForClients() throws IOException {
         while (isWorking) {
             Socket clientSocket = socket.accept();
-
-            ClientThread clientThread = new ClientThread(clientSocket);
-            currentlyRunningClients.put(clientSocket.getInetAddress().getHostAddress(), clientThread);
-            clientThreadExecutorService.submit(clientThread);
-            //TODO: RISK! Jeżeli wywolam w tym miejscu clientThread.writeMessage("a maszz brzydalu!") to czy sie może spieprzyc?!
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-
+            MessageSender sender = new MessageSender(clientSocket);
+            MessageReceiver reader = new MessageReceiver(clientSocket);
+            CommunicationChannel channel = new CommunicationChannel(reader, sender);
+            messageReaderThreadExecutorService.submit(reader);
+            activeCommunicationChannels.put(clientSocket.getInetAddress().getHostAddress(), channel);
         }
     }
 }
