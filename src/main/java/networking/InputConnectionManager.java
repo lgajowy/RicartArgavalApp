@@ -1,5 +1,7 @@
 package networking;
 
+import appLogic.interfaces.IMessageArrivedListener;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -7,27 +9,27 @@ import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class InputConnectionManager implements Runnable{
+public class InputConnectionManager implements Runnable {
 
     private ExecutorService messageThreads;
     private HashMap<String, MessageReceiver> messageReceivers;
-
     private ServerSocket socket;
     private boolean isWorking;
-
     private int portToListenOn;
+    private IMessageArrivedListener jsonMessageHandler;
 
-
-    public InputConnectionManager(int portToListenOn, int expectedUsersAmount) {
+    public InputConnectionManager(int portToListenOn, int expectedUsersAmount, IMessageArrivedListener messageInterpreter) {
         this.portToListenOn = portToListenOn;
-        this.messageThreads = Executors.newFixedThreadPool(expectedUsersAmount );
+        this.messageThreads = Executors.newFixedThreadPool(expectedUsersAmount);
         this.messageReceivers = new HashMap<String, MessageReceiver>();
+        this.jsonMessageHandler = messageInterpreter;
     }
 
     private void listenForClientsWillingToConnectWithMe() throws IOException {
+
         while (isWorking) {
             Socket clientSocket = socket.accept();
-            MessageReceiver reader = new MessageReceiver(clientSocket);
+            MessageReceiver reader = new MessageReceiver(clientSocket, this.jsonMessageHandler);
             messageThreads.submit(reader);
             messageReceivers.put(clientSocket.getInetAddress().getHostAddress(), reader);
         }

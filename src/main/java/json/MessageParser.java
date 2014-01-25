@@ -1,31 +1,52 @@
 package json;
 
+import com.google.common.primitives.Ints;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class MessageParser extends JSONParser {
     private JSONObject parsedObject;
+    private String textToBeParsed;
 
-    public MessageParser(String jsonData) {
+    public MessageParser(String textToBeParsed) {
         super();
+        this.textToBeParsed = textToBeParsed;
+    }
+
+    public Message parse() {
         try {
-            parsedObject = (JSONObject) parse(jsonData);
+            parsedObject = (JSONObject) parse(textToBeParsed);
+
+            String clockValueString = getClockValue();
+            Integer clockValue = castClockValueToInteger(clockValueString);
+            String messageType = getMessageType();
+
+            if (null != clockValue && null != messageType) {
+                return new Message(clockValue, messageType);
+            } else {
+                return null;
+            }
         } catch (ParseException e) {
             e.printStackTrace();
+            System.err.println("This text is not JSON!!!");
+            return null;
         }
     }
 
-    private int getClockValue() {
-        return Integer.parseInt((String) parsedObject.get("clock"));
+    private Integer castClockValueToInteger(String clockValueString) {
+        Integer clockValue = null;
+        if (clockValueString != null) {
+            clockValue = Ints.tryParse(clockValueString);
+        }
+        return clockValue;
+    }
+
+    private String getClockValue() {
+        return (String) parsedObject.get("clock");
     }
 
     private String getMessageType() {
         return (String) parsedObject.get("type");
-    }
-
-    public Message getParsedMessage() {
-        return new Message(getClockValue(), getMessageType());
-
     }
 }

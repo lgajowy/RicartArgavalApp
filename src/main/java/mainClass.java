@@ -1,3 +1,4 @@
+import appLogic.MessageInterpreter;
 import networking.InputConnectionManager;
 import networking.OutputConnectionManager;
 
@@ -5,7 +6,9 @@ import java.io.IOException;
 
 public class mainClass {
     public static void main(String[] args) throws InterruptedException {
-        InputConnectionManager inputConnectionManager = new InputConnectionManager(2000, 4);
+
+
+        InputConnectionManager inputConnectionManager = new InputConnectionManager(2003, 4, new MessageInterpreter());
         new Thread(inputConnectionManager).start();
 
 //        OutputConnectionManager ocm = new OutputConnectionManager(4);

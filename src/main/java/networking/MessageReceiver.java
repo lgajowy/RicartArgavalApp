@@ -1,6 +1,5 @@
 package networking;
 
-import appLogic.MessageInterpreter;
 import appLogic.interfaces.IMessageArrivedListener;
 import networking.events.MessageArrived;
 import networking.utils.MessageState;
@@ -17,9 +16,9 @@ public class MessageReceiver implements Runnable {
     private boolean isWorking;
     private ArrayList<IMessageArrivedListener> arrivingMessageListeners = new ArrayList<IMessageArrivedListener>();
 
-    public MessageReceiver(Socket clientSocket) {
+    public MessageReceiver(Socket clientSocket, IMessageArrivedListener messageHandler) {
         try {
-            arrivingMessageListeners.add(new MessageInterpreter()); //TODO: HOw to pass MEssage Interpreter efficiently, not by parameter?
+            arrivingMessageListeners.add(messageHandler);
             messageScanner = new Scanner(new InputStreamReader(clientSocket.getInputStream()));
         } catch (IOException e) {
             e.printStackTrace();
@@ -54,7 +53,7 @@ public class MessageReceiver implements Runnable {
             int indexOfLeftBracket = line.lastIndexOf("{");
             int indexOfRightBracket = line.indexOf("}", indexOfLeftBracket);
             actualState = MessageState.determineMessageState(indexOfLeftBracket, indexOfRightBracket, previousState);
-            System.out.println(actualState);
+            System.err.println(actualState);
 
             if (actualState == MessageState.oneliner) {
                 message = new StringBuilder(line.substring(indexOfLeftBracket, indexOfRightBracket + 1));
@@ -73,7 +72,6 @@ public class MessageReceiver implements Runnable {
             previousState = actualState;
 
             if (actualState == MessageState.ended || actualState == MessageState.oneliner) {
-                //System.out.println("MESSAGE:\n" + message.toString());
                 fireMessageArrivedEvent(message.toString());
             }
         }
