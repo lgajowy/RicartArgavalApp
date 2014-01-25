@@ -1,19 +1,24 @@
 package appLogic;
 
-/**
- * Created by lukasz on 1/25/14.
- */
 public class Algorithm {
 
-    public Algorithm() {}
+    private AppState applicationState;
 
+    public Algorithm() {
 
-    public void orderCriticalSection() {
+    }
 
-        // 1.send requests
-        // 2.
+    private void setApplicationState(AppState state) {
+        this.applicationState = state;
+    }
 
+    public AppState getApplicationState() {
+        return applicationState;
+    }
 
-
+    public void enterCriticalSection() {
+        System.out.println("========================");
+        System.out.println("ENTERED-CRITICAL_SECTION");
+        System.out.println("========================");
     }
 }
