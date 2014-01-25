@@ -20,10 +20,12 @@ public class ConfigParserTest extends TestCase {
         JSONObject configuration = new JSONObject();
         configuration.put("occupationTime", "100");
         JSONArray addresses = new JSONArray();
-        addresses.add("1.1.1.1");
-        addresses.add("2.2.2.2");
-        addresses.add("3.3.3.3");
-        configuration.put("addresses", addresses);
+
+        addresses.add(prepareJSONAddressAndPort("1.1.1.1", "1111"));
+        addresses.add(prepareJSONAddressAndPort("2.2.2.2", "2222"));
+        addresses.add(prepareJSONAddressAndPort("3.3.3.3", "3333"));
+
+        configuration.put("addressesAndPorts", addresses);
 
         try {
             FileWriter testConfig = new FileWriter(TEST_CONFIG_FILE_PATH);
@@ -36,6 +38,14 @@ public class ConfigParserTest extends TestCase {
         }
     }
 
+    private JSONObject prepareJSONAddressAndPort(String ipAddress, String port) {
+        JSONObject addresAndPortJSON = new JSONObject();
+        addresAndPortJSON.put("ipAddress", ipAddress);
+        addresAndPortJSON.put("port", port);
+
+        return addresAndPortJSON;
+    }
+
     public void tearDown() throws Exception {
         super.tearDown();
         File configFile = new File(TEST_CONFIG_FILE_PATH);
@@ -45,19 +55,18 @@ public class ConfigParserTest extends TestCase {
     @Test
     public void testGetCriticalSectionOccupationTime() throws Exception {
         ConfigParser parser = new ConfigParser(TEST_CONFIG_FILE_PATH);
-
         assertEquals(OCCUPATION_TIME, parser.getCriticalSectionOccupationTime());
     }
 
     @Test
-    public void testName() throws Exception {
+    public void testGetOtherNodesAddressesAndPorts() throws Exception {
         ConfigParser parser = new ConfigParser(TEST_CONFIG_FILE_PATH);
-
         JSONArray addresses = new JSONArray();
-        addresses.add("1.1.1.1");
-        addresses.add("2.2.2.2");
-        addresses.add("3.3.3.3");
 
-        assertEquals(addresses, parser.getOtherNodesAddresses());
+        addresses.add(prepareJSONAddressAndPort("1.1.1.1", "1111"));
+        addresses.add(prepareJSONAddressAndPort("2.2.2.2", "2222"));
+        addresses.add(prepareJSONAddressAndPort("3.3.3.3", "3333"));
+        assertEquals(addresses, parser.getOtherNodesAddressesAndPorts());
     }
+
 }

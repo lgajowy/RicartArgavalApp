@@ -27,7 +27,7 @@ public class ConfigParser extends JSONParser {
         return Integer.parseInt((String) parsedObject.get("occupationTime"));
     }
 
-    public ArrayList<String> getOtherNodesAddresses() {
-        return (JSONArray) parsedObject.get("addresses");
+    public ArrayList<String> getOtherNodesAddressesAndPorts() {
+        return (JSONArray) parsedObject.get("addressesAndPorts");
     }
 }
