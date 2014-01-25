@@ -27,15 +27,13 @@ public class MessageInterpreter implements IMessageArrivedListener {
         if (obtainedMessage != null) {
             switch (obtainedMessage.getMessageType()) {
                 case ok:
-                    //handleokMessage w zależności od strategii
-                    System.out.println("Ignoring ok message");
+                    RACriticalSection.getStrategy().handleOkMessage();
                     break;
                 case order:
-                    System.out.println("Ignoring unknown message");
-                    //handleoOrderMessage w zależności od strategii
+                    RACriticalSection.getStrategy().handleOrderMessage();
                     break;
                 case unknown:
-                    System.out.println("Ignoring order message");
+                    System.out.println("Ignoring unknown message");
                     break;
                 default:
                     throw new IllegalArgumentException();

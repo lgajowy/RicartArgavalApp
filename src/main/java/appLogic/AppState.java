@@ -1,3 +1,3 @@
 package appLogic;
 
-public enum AppState {idle, inSection, enteringSection}
+public enum AppState {idle, occupiedSection, enteringSection }

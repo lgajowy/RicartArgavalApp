@@ -67,7 +67,7 @@ public class MessageReceiver implements Runnable {
                 assert message != null;
                 message.append(line, 0, indexOfRightBracket + 1);
             } else {
-                System.out.println(actualState);
+                System.err.println(actualState);
             }
             previousState = actualState;
 

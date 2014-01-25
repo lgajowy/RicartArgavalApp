@@ -1,4 +1,6 @@
+import appLogic.AppState;
 import appLogic.MessageInterpreter;
+import appLogic.RACriticalSection;
 import networking.InputConnectionManager;
 import networking.OutputConnectionManager;
 
@@ -7,6 +9,8 @@ import java.io.IOException;
 public class mainClass {
     public static void main(String[] args) throws InterruptedException {
 
+        RACriticalSection criticalSection = new RACriticalSection();
+        RACriticalSection.setApplicationState(AppState.enteringSection);
 
         InputConnectionManager inputConnectionManager = new InputConnectionManager(2003, 4, new MessageInterpreter());
         new Thread(inputConnectionManager).start();
