@@ -1,13 +1,17 @@
 package networking;
 
+import json.Message;
+
+import java.net.InetAddress;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class OutputConnectionManager {
 
     private ExecutorService messageThreads;
-    private HashMap<String, MessageSender> messageSenders;
+    private static HashMap<String, MessageSender> messageSenders;
 
     public OutputConnectionManager(int expectedUsersAmount) {
         this.messageThreads = Executors.newFixedThreadPool(expectedUsersAmount);
@@ -24,7 +28,14 @@ public class OutputConnectionManager {
         }
     }
 
-    public MessageSender getMessageSender(String ipAddress) {
-        return messageSenders.get(ipAddress);
+    public static void sendMessageToAllConnectedNodes(Message message) {
+        for (Map.Entry<String, MessageSender> msgSender : messageSenders.entrySet()) {
+            msgSender.getValue().writeMessageToClient(message.toString());
+        }
+    }
+
+    public static void sendMessageToOneNode(Message message, InetAddress address) {
+        MessageSender ms = messageSenders.get(address.getHostAddress());
+        ms.writeMessageToClient(message.toString());
     }
 }

@@ -2,17 +2,17 @@ package appLogic.strategies;
 
 import appLogic.interfaces.IMessageHandlingStrategy;
 
-/**
- * Created by lukasz on 1/26/14.
- */
+import java.net.InetAddress;
+
 public class OccupiedSectionStrategy implements IMessageHandlingStrategy {
+
     @Override
-    public void handleOrderMessage() {
+    public void handleOrderMessage(InetAddress incommingMsgAddress) {
 
     }
 
     @Override
-    public void handleOkMessage() {
-        System.out.println("OccupiedSection strategy ok");
+    public void handleOkMessage(InetAddress incommingMsgAddress) {
+
     }
 }

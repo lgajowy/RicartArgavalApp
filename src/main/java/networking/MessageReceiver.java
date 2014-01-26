@@ -15,8 +15,10 @@ public class MessageReceiver implements Runnable {
     private Scanner messageScanner;
     private boolean isWorking;
     private ArrayList<IMessageArrivedListener> arrivingMessageListeners = new ArrayList<IMessageArrivedListener>();
+    private Socket clientSocket;
 
     public MessageReceiver(Socket clientSocket, IMessageArrivedListener messageHandler) {
+        this.clientSocket = clientSocket;
         try {
             arrivingMessageListeners.add(messageHandler);
             messageScanner = new Scanner(new InputStreamReader(clientSocket.getInputStream()));
@@ -37,7 +39,8 @@ public class MessageReceiver implements Runnable {
     }
 
     private synchronized void fireMessageArrivedEvent(String message) {
-        MessageArrived messageEvent = new MessageArrived(this, message);
+
+        MessageArrived messageEvent = new MessageArrived(this, message, clientSocket.getInetAddress());
         Iterator listeners = arrivingMessageListeners.iterator();
         while (listeners.hasNext()) {
             ((IMessageArrivedListener) listeners.next()).onMessageArrived(messageEvent);

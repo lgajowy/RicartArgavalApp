@@ -1,21 +1,21 @@
 package appLogic;
 
 public class LogicalClock {
-    private int value;
+    private static int value;
 
     public LogicalClock() {
         this.value = 0;
     }
 
-    public void setValue(int value) {
-        this.value = value;
+    public static void increment(){
+        value++;
     }
 
-    public int getValue() {
+    public static int getValue() {
         return value;
     }
 
-    public void reset() {
+    public static void reset() {
         value = 0;
     }
 }

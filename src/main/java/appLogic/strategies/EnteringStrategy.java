@@ -2,18 +2,20 @@ package appLogic.strategies;
 
 import appLogic.interfaces.IMessageHandlingStrategy;
 
+import java.net.InetAddress;
+
 /**
  * Created by lukasz on 1/26/14.
  */
 public class EnteringStrategy implements IMessageHandlingStrategy {
 
     @Override
-    public void handleOrderMessage() {
-        System.out.println("entering strategy order");
+    public void handleOrderMessage(InetAddress incommingMsgAddress) {
+
     }
 
     @Override
-    public void handleOkMessage() {
-        System.out.println("entering strategy ok");
+    public void handleOkMessage(InetAddress incommingMsgAddress) {
+
     }
 }

@@ -5,6 +5,8 @@ import json.Message;
 import json.MessageParser;
 import networking.events.MessageArrived;
 
+import java.net.InetAddress;
+
 public class MessageInterpreter implements IMessageArrivedListener {
 
     @Override
@@ -12,7 +14,7 @@ public class MessageInterpreter implements IMessageArrivedListener {
         System.out.println(event.getMessage() + "<= it was printed from Message interpreter");
         Message receivedMsg = parseJsonMessageOrNull(event);
         try {
-            handleMessage(receivedMsg);
+            handleMessage(receivedMsg, event.getINetAddress());
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
@@ -23,14 +25,14 @@ public class MessageInterpreter implements IMessageArrivedListener {
         return parser.parse();
     }
 
-    private void handleMessage(Message obtainedMessage) {
+    private void handleMessage(Message obtainedMessage, InetAddress iNetAddress) {
         if (obtainedMessage != null) {
             switch (obtainedMessage.getMessageType()) {
                 case ok:
-                    RACriticalSection.getStrategy().handleOkMessage();
+                    RACriticalSection.getStrategy().handleOkMessage(iNetAddress);
                     break;
                 case order:
-                    RACriticalSection.getStrategy().handleOrderMessage();
+                    RACriticalSection.getStrategy().handleOrderMessage(iNetAddress);
                     break;
                 case unknown:
                     System.out.println("Ignoring unknown message");
@@ -42,4 +44,6 @@ public class MessageInterpreter implements IMessageArrivedListener {
             System.err.println("Wrong message format!");
         }
     }
+
+
 }
