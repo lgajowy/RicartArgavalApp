@@ -18,8 +18,10 @@ public class MessageParser extends JSONParser {
         try {
             parsedObject = (JSONObject) parse(textToBeParsed);
 
-            String clockValueString = getClockValue();
-            Integer clockValue = castClockValueToInteger(clockValueString);
+
+            //String clockValueString = getClockValue();
+            //Integer clockValue = castClockValueToInteger(clockValueString);
+            Long clockValue = getClockValue();
             String messageType = getMessageType();
 
             if (null != clockValue && null != messageType) {
@@ -27,7 +29,7 @@ public class MessageParser extends JSONParser {
             } else {
                 return null;
             }
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             System.err.println("This text is not JSON!!!");
             return null;
@@ -42,8 +44,8 @@ public class MessageParser extends JSONParser {
         return clockValue;
     }
 
-    private String getClockValue() {
-        return (String) parsedObject.get("clock");
+    private Long getClockValue() {
+        return (Long) parsedObject.get("clock");
     }
 
     private String getMessageType() {
