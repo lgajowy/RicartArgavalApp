@@ -4,25 +4,23 @@ import appLogic.interfaces.IMessageHandlingStrategy;
 import appLogic.strategies.EnteringStrategy;
 import appLogic.strategies.IdleStrategy;
 import appLogic.strategies.OccupiedSectionStrategy;
-import com.sun.org.apache.xpath.internal.SourceTree;
+
+import appLogic.strategies.states.ApplicationStates;
+import appLogic.utils.Order;
+import json.Message;
+import json.utils.MessageType;
 import networking.InputConnectionManager;
 import networking.OutputConnectionManager;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
+
 public class RACriticalSection {
 
-    private static AppState applicationState = AppState.idle;
-
-    private LogicalClock applicationLogicalClock;
-
-    private MessageInterpreter incommingMsgInterpreter;
-
-
-
-    public RACriticalSection() {
-        this.applicationLogicalClock = new LogicalClock();
-        this.incommingMsgInterpreter = new MessageInterpreter();
-
-    }
+    private static ApplicationStates applicationState = ApplicationStates.idle;
+    private static Queue<Order> deferredOrders = new LinkedList<Order>();
+    private static MessageInterpreter messageInterpreter;
 
     public void enter() {
 
@@ -30,13 +28,25 @@ public class RACriticalSection {
 
     public void leave() {
 
+        allowDeferredNodesEnterSection();
+        setApplicationState(ApplicationStates.idle);
     }
 
-    private static void setApplicationState(AppState applicationState) {
+    private void allowDeferredNodesEnterSection() {
+        for (Order deferredOrder : deferredOrders) {
+            OutputConnectionManager.sendMessageToOneNode(new Message(deferredOrder.getClockValue(), MessageType.ok), deferredOrder.getAddress());
+        }
+    }
+
+    public static void putOrderInDeferredQueue(Order order) {
+        deferredOrders.add(order);
+    }
+
+    private static void setApplicationState(ApplicationStates applicationState) {
         RACriticalSection.applicationState = applicationState;
     }
 
-    public static AppState getApplicationState() {
+    public static ApplicationStates getApplicationState() {
         return applicationState;
     }
 
@@ -54,13 +64,13 @@ public class RACriticalSection {
 
     public static void main(String[] args) {
 
-        LogicalClock clock = new LogicalClock();
         OutputConnectionManager outputConnectionManager = new OutputConnectionManager(4);   //todo: read from config
         outputConnectionManager.connectToServer("127.0.0.1", 2001);
-        InputConnectionManager inputConnectionManager = new InputConnectionManager(2003, 4, new MessageInterpreter()); //todo: read from config
+        messageInterpreter = new MessageInterpreter();
+        InputConnectionManager inputConnectionManager = new InputConnectionManager(2003, 4, messageInterpreter); //todo: read from config
         new Thread(inputConnectionManager).start();
 
         new RACriticalSection();
-
+        setApplicationState(ApplicationStates.occupiedSection);
     }
 }

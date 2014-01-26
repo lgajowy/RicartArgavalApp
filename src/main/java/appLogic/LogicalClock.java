@@ -1,17 +1,19 @@
 package appLogic;
 
 public class LogicalClock {
-    private static int value;
+    private static long value = 0;
 
-    public LogicalClock() {
-        this.value = 0;
-    }
-
-    public static void increment(){
+    public static void increment() {
         value++;
     }
 
-    public static int getValue() {
+    public static void synchronize(long logicalTime) {
+        if (value < logicalTime) {
+            value = logicalTime;
+        }
+    }
+
+    public static long getValue() {
         return value;
     }
 

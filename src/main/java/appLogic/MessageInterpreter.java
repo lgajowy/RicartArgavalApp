@@ -1,6 +1,7 @@
 package appLogic;
 
 import appLogic.interfaces.IMessageArrivedListener;
+import appLogic.utils.Order;
 import json.Message;
 import json.MessageParser;
 import networking.events.MessageArrived;
@@ -26,13 +27,15 @@ public class MessageInterpreter implements IMessageArrivedListener {
     }
 
     private void handleMessage(Message obtainedMessage, InetAddress iNetAddress) {
+        LogicalClock.synchronize(obtainedMessage.getClockValue());
+
         if (obtainedMessage != null) {
             switch (obtainedMessage.getMessageType()) {
                 case ok:
-                    RACriticalSection.getStrategy().handleOkMessage(iNetAddress);
+                    RACriticalSection.getStrategy().handleOkMessage(iNetAddress);   ///TODO: Don't i have to pass logical clock value here?? (as below new eg. Ok())
                     break;
                 case order:
-                    RACriticalSection.getStrategy().handleOrderMessage(iNetAddress);
+                    RACriticalSection.getStrategy().handleOrderMessage(new Order(iNetAddress, obtainedMessage.getClockValue()));
                     break;
                 case unknown:
                     System.out.println("Ignoring unknown message");
@@ -44,6 +47,4 @@ public class MessageInterpreter implements IMessageArrivedListener {
             System.err.println("Wrong message format!");
         }
     }
-
-
 }

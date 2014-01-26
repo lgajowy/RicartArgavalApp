@@ -1,6 +1,7 @@
 package appLogic.strategies;
 
 import appLogic.interfaces.IMessageHandlingStrategy;
+import appLogic.utils.Order;
 
 import java.net.InetAddress;
 
@@ -10,7 +11,7 @@ import java.net.InetAddress;
 public class EnteringStrategy implements IMessageHandlingStrategy {
 
     @Override
-    public void handleOrderMessage(InetAddress incommingMsgAddress) {
+    public void handleOrderMessage(Order message) {
 
     }
 
