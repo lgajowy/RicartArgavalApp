@@ -38,9 +38,8 @@ public class MessageInterpreter implements IMessageArrivedListener {
                 default:
                     throw new IllegalArgumentException();
             }
+        } else {
+            System.err.println("Wrong message format!");
         }
     }
 }
-
-
-

@@ -52,9 +52,13 @@ public class MessageSender implements Runnable {
         }
     }
 
-    public void writeMessageToClient(String message) throws IOException {
+    public void writeMessageToClient(String message) {
         if (outToServer != null) {
-            outToServer.writeChars(message);
+            try {
+                outToServer.writeChars(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
