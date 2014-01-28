@@ -1,25 +1,20 @@
 package networking;
 
-import javax.net.ssl.SSLSocket;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.*;
+import java.net.ConnectException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 public class MessageSender implements Runnable {
 
+    private final int SLEEP_TIME = 3000;
+
     private String ipAddress;
     private int port;
+
     private Socket outputSocket;
     private DataOutputStream outToServer;
-
-    public MessageSender(Socket outputSocket) {
-        this.outputSocket = outputSocket;
-        try {
-            outToServer = new DataOutputStream(outputSocket.getOutputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     public MessageSender(String ipAddress, int port) throws InterruptedException {
         this.ipAddress = ipAddress;
@@ -28,20 +23,21 @@ public class MessageSender implements Runnable {
 
     @Override
     public void run() {
-        try {
-            establishConnection(ipAddress, port);
-            System.out.println("connection established!");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        establishConnection(ipAddress, port);
+        System.out.println("connection established!");
     }
 
-    private void establishConnection(String ipAddress, int port) throws InterruptedException {
+    private void establishConnection(String ipAddress, int port) {
         try {
             outputSocket = new Socket(ipAddress, port);
             outToServer = new DataOutputStream(outputSocket.getOutputStream());
         } catch (ConnectException e) {
-            Thread.sleep(4000);
+            //e.printStackTrace();
+            try {
+                Thread.sleep(SLEEP_TIME);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
             System.err.println("Trying to connect to address: " + ipAddress + " on port: " + port);
             establishConnection(ipAddress, port);
         } catch (UnknownHostException e) {
@@ -55,11 +51,15 @@ public class MessageSender implements Runnable {
     public void writeMessageToClient(String message) {
         if (outToServer != null) {
             try {
-                outToServer.writeChars(message);
+                outToServer.writeBytes(message);
             } catch (IOException e) {
-                e.printStackTrace();
+                System.err.println("Connection has been broken! Reconnecting...");
+                establishConnection(ipAddress, port);
+                System.err.println("Repeating message");
+                writeMessageToClient(message);
             }
+        } else {
+            System.err.println("No output connection");
         }
     }
 }
-

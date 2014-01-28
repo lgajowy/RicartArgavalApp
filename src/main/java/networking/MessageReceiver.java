@@ -51,7 +51,8 @@ public class MessageReceiver implements Runnable {
         StringBuilder message = null;
         MessageState previousState = MessageState.noMessage;
         MessageState actualState;
-        while (messageScanner.hasNextLine()) {
+        while (messageScanner.hasNextLine()) {      //TODO. FIXME! oczekuje na endl. a ja potrzebuje zebrac cokolwiek sie pojawi w InputStream.
+        //while (messageScanner.) {
             String line = messageScanner.nextLine();
             int indexOfLeftBracket = line.lastIndexOf("{");
             int indexOfRightBracket = line.indexOf("}", indexOfLeftBracket);

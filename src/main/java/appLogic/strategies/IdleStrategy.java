@@ -14,8 +14,8 @@ public class IdleStrategy implements IMessageHandlingStrategy {
     @Override
     public void handleOrderMessage(Order incomingOrder) {
         LogicalClock.increment();
-        OutputConnectionManager.sendMessageToNode(new Message(new Long(LogicalClock.getValue()), MessageType.ok), incomingOrder.getAddress());
         System.out.println("sending order idle state");
+        OutputConnectionManager.sendMessageToNode(new Message(new Long(LogicalClock.getValue()), MessageType.ok), incomingOrder.getAddress());
     }
 
     @Override

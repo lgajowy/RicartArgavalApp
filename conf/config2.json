@@ -1,0 +1,3 @@
+{"hostAddress":"10.42.0.84",
+ "addressesAndPorts":[{"port":"44440","ipAddress":"10.42.0.1"},{"port":"44440","ipAddress":"127.40.0.2"},],
+"occupationTime":"10000"}

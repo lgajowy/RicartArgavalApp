@@ -1,6 +1,7 @@
 package appLogic.strategies;
 
 import appLogic.Application;
+import appLogic.DeferredMessagesManager;
 import appLogic.LogicalClock;
 import appLogic.RACriticalSection;
 import appLogic.interfaces.IMessageHandlingStrategy;
@@ -13,6 +14,12 @@ import networking.OutputConnectionManager;
 import java.net.InetAddress;
 
 public class EnteringStrategy implements IMessageHandlingStrategy {
+
+    private final DeferredMessagesManager defferedMsgManager;
+
+    public EnteringStrategy(DeferredMessagesManager defferedMsgManager) {
+        this.defferedMsgManager = defferedMsgManager;
+    }
 
     @Override
     public void handleOrderMessage(Order incomingOrder) {
@@ -40,7 +47,7 @@ public class EnteringStrategy implements IMessageHandlingStrategy {
     //TODO: Copied code...
     private void deferOrder(Order incomingOrder) {
         System.out.println("deferring order");
-        RACriticalSection.putOrderInDeferredQueue(incomingOrder);
+        defferedMsgManager.putOrderInDeferredQueue(incomingOrder);
     }
 
     @Override
