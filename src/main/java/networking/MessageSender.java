@@ -41,7 +41,7 @@ public class MessageSender implements Runnable {
             outputSocket = new Socket(ipAddress, port);
             outToServer = new DataOutputStream(outputSocket.getOutputStream());
         } catch (ConnectException e) {
-            Thread.sleep(1000);
+            Thread.sleep(4000);
             System.err.println("Trying to connect to address: " + ipAddress + " on port: " + port);
             establishConnection(ipAddress, port);
         } catch (UnknownHostException e) {

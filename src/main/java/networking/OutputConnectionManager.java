@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
 
 public class OutputConnectionManager {
 
-    private ExecutorService messageThreads;
+    private static ExecutorService messageThreads;
     private static HashMap<String, MessageSender> messageSenders;
 
     public OutputConnectionManager(int expectedUsersAmount) {
@@ -34,7 +34,7 @@ public class OutputConnectionManager {
         }
     }
 
-    public static void sendMessageToOneNode(Message message, InetAddress address) {
+    public static void sendMessageToNode(Message message, InetAddress address) {
         MessageSender ms = messageSenders.get(address.getHostAddress());
         ms.writeMessageToClient(message.toString());
     }

@@ -19,6 +19,7 @@ public class ConfigParserTest extends TestCase {
 
         JSONObject configuration = new JSONObject();
         configuration.put("occupationTime", "100");
+        configuration.put("hostAddress", "127.0.0.1");
         JSONArray addresses = new JSONArray();
 
         addresses.add(prepareJSONAddressAndPort("1.1.1.1", "1111"));
@@ -69,4 +70,8 @@ public class ConfigParserTest extends TestCase {
         assertEquals(addresses, parser.getOtherNodesAddressesAndPorts());
     }
 
+    public void testGetThisHostAddress() throws Exception {
+        ConfigParser parser = new ConfigParser(TEST_CONFIG_FILE_PATH);
+        assertEquals("127.0.0.1", parser.getThisHostAddress());
+    }
 }

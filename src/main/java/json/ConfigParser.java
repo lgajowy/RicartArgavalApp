@@ -30,4 +30,8 @@ public class ConfigParser extends JSONParser {
     public ArrayList<String> getOtherNodesAddressesAndPorts() {
         return (JSONArray) parsedObject.get("addressesAndPorts");
     }
+
+    public String getThisHostAddress() {
+        return (String) parsedObject.get("hostAddress");
+    }
 }

@@ -1,40 +1,42 @@
 package appLogic;
 
 import appLogic.interfaces.IMessageHandlingStrategy;
+import appLogic.states.SectionState;
 import appLogic.strategies.EnteringStrategy;
 import appLogic.strategies.IdleStrategy;
 import appLogic.strategies.OccupiedSectionStrategy;
-
-import appLogic.strategies.states.ApplicationStates;
 import appLogic.utils.Order;
 import json.Message;
 import json.utils.MessageType;
-import networking.InputConnectionManager;
 import networking.OutputConnectionManager;
 
 import java.util.LinkedList;
 import java.util.Queue;
 
-
 public class RACriticalSection {
-
-    private static ApplicationStates applicationState = ApplicationStates.idle;
+    private static SectionState raSectionState = SectionState.idle;
     private static Queue<Order> deferredOrders = new LinkedList<Order>();
-    private static MessageInterpreter messageInterpreter;
 
-    public void enter() {
+    public void preEnter() {
+        setRaSectionState(SectionState.enteringSection);
+        OutputConnectionManager.sendMessageToAllConnectedNodes(new Message(LogicalClock.getValue(), MessageType.order));
+
+        //TODO: timer?
 
     }
 
-    public void leave() {
+    public void enter() {
+        new SectionResidence(Application.getOccuptaionTime(), this);
+    }
 
+    public void leave() {
+        setRaSectionState(SectionState.idle);
         allowDeferredNodesEnterSection();
-        setApplicationState(ApplicationStates.idle);
     }
 
     private void allowDeferredNodesEnterSection() {
         for (Order deferredOrder : deferredOrders) {
-            OutputConnectionManager.sendMessageToOneNode(new Message(deferredOrder.getClockValue(), MessageType.ok), deferredOrder.getAddress());
+            OutputConnectionManager.sendMessageToNode(new Message(deferredOrder.getClockValue(), MessageType.ok), deferredOrder.getAddress());
         }
     }
 
@@ -42,16 +44,16 @@ public class RACriticalSection {
         deferredOrders.add(order);
     }
 
-    private static void setApplicationState(ApplicationStates applicationState) {
-        RACriticalSection.applicationState = applicationState;
+    private static void setRaSectionState(SectionState raSectionState) {
+        RACriticalSection.raSectionState = raSectionState;
     }
 
-    public static ApplicationStates getApplicationState() {
-        return applicationState;
+    private static SectionState getRaSectionState() {
+        return raSectionState;
     }
 
     public static IMessageHandlingStrategy getStrategy() {
-        switch (applicationState) {
+        switch (getRaSectionState()) {
             case idle:
                 return new IdleStrategy();
             case occupiedSection:
@@ -60,17 +62,5 @@ public class RACriticalSection {
                 return new EnteringStrategy();
         }
         return null;
-    }
-
-    public static void main(String[] args) {
-
-        OutputConnectionManager outputConnectionManager = new OutputConnectionManager(4);   //todo: read from config
-        outputConnectionManager.connectToServer("127.0.0.1", 2001);
-        messageInterpreter = new MessageInterpreter();
-        InputConnectionManager inputConnectionManager = new InputConnectionManager(2003, 4, messageInterpreter); //todo: read from config
-        new Thread(inputConnectionManager).start();
-
-        new RACriticalSection();
-        setApplicationState(ApplicationStates.occupiedSection);
     }
 }
