@@ -48,7 +48,7 @@ public class MessageSender implements Runnable {
         }
     }
 
-    public void writeMessageToClient(String message) {
+    public synchronized void writeMessageToClient(String message) {
         if (outToServer != null) {
             try {
                 outToServer.writeBytes(message);

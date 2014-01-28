@@ -65,7 +65,7 @@ public class Application {
             addressAndPort = (JSONObject) addressesAndPorts.get(i);
             outputConnectionManager.connectToServer(addressAndPort.get("ipAddress").toString(), Integer.parseInt((String) addressAndPort.get("port")));
         }
-        InputConnectionManager inputConnectionManager = new InputConnectionManager(44445, totalNumberOfNeighborNodes, incomingJsonMsgIngerpretter);
+        InputConnectionManager inputConnectionManager = new InputConnectionManager(44444, totalNumberOfNeighborNodes, incomingJsonMsgIngerpretter);
         new Thread(inputConnectionManager).start();
     }
 

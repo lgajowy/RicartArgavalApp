@@ -15,7 +15,9 @@ public class DeferredMessagesManager {
     public void allowDeferredNodesEnterSection() {
         for (Order deferredOrder : deferredOrders) {
             OutputConnectionManager.sendMessageToNode(new Message(deferredOrder.getClockValue(), MessageType.ok), deferredOrder.getAddress());
+
         }
+        deferredOrders = new LinkedList<Order>();
     }
 
     public synchronized void putOrderInDeferredQueue(Order order) {

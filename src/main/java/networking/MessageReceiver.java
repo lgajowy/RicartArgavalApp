@@ -6,6 +6,7 @@ import networking.utils.MessageState;
 
 import java.io.*;
 import java.net.Socket;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
@@ -20,8 +21,8 @@ public class MessageReceiver implements Runnable {
     public MessageReceiver(Socket clientSocket, IMessageArrivedListener messageHandler) {
         this.clientSocket = clientSocket;
         try {
-            arrivingMessageListeners.add(messageHandler);
-            messageScanner = new Scanner(new InputStreamReader(clientSocket.getInputStream()));
+            addArivingMessageListener(messageHandler);
+            messageScanner = new Scanner(new InputStreamReader(clientSocket.getInputStream())).useDelimiter("\\z");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -34,7 +35,7 @@ public class MessageReceiver implements Runnable {
         }
     }
 
-    public synchronized void addArivingMessageListener(IMessageArrivedListener listeningInstance) {
+    private synchronized void addArivingMessageListener(IMessageArrivedListener listeningInstance) {
         arrivingMessageListeners.add(listeningInstance);
     }
 
@@ -51,9 +52,8 @@ public class MessageReceiver implements Runnable {
         StringBuilder message = null;
         MessageState previousState = MessageState.noMessage;
         MessageState actualState;
-        while (messageScanner.hasNextLine()) {      //TODO. FIXME! oczekuje na endl. a ja potrzebuje zebrac cokolwiek sie pojawi w InputStream.
-        //while (messageScanner.) {
-            String line = messageScanner.nextLine();
+        while (messageScanner.hasNext()) {
+            String line = messageScanner.next();
             int indexOfLeftBracket = line.lastIndexOf("{");
             int indexOfRightBracket = line.indexOf("}", indexOfLeftBracket);
             actualState = MessageState.determineMessageState(indexOfLeftBracket, indexOfRightBracket, previousState);

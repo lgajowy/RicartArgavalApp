@@ -37,7 +37,7 @@ public class MessageInterpreter implements IMessageArrivedListener {
     }
 
     private void handleMessage(Message obtainedMessage, InetAddress iNetAddress) {
-        LogicalClock.synchronize(obtainedMessage.getClockValue());  //TODO: Fixme! w przypadku, gdy przyjdzie order a ja bede chciał wejść - nie mogę porównać dobrze czasu!
+       // LogicalClock.synchronize(obtainedMessage.getClockValue());  //TODO: Fixme! w przypadku, gdy przyjdzie order a ja bede chciał wejść - nie mogę porównać dobrze czasu!
 
         if (obtainedMessage != null) {
             switch (obtainedMessage.getMessageType()) {
