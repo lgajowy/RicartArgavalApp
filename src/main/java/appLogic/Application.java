@@ -34,7 +34,7 @@ public class Application {
         ConfigParser configurationParser = new ConfigParser(args[0]);
 
         DeferredMessagesManager msgManager = new DeferredMessagesManager();
-        OkMessageManagerWhileEntering okRecorder = new OkMessageManagerWhileEntering();
+        OkMessageManagerForEnteringState okRecorder = new OkMessageManagerForEnteringState();
         RACriticalSection section = new RACriticalSection(msgManager, okRecorder);
         MessageInterpreter incomingJsonMsgIngerpretter = new MessageInterpreter(msgManager, okRecorder);
 

@@ -16,7 +16,6 @@ public class OutputConnectionManager {
     private static ExecutorService messageThreads;
     private static HashMap<String, MessageSender> messageSenders;
 
-
     public OutputConnectionManager(int expectedUsersAmount) {
         this.messageThreads = Executors.newFixedThreadPool(expectedUsersAmount);
         this.messageSenders = new HashMap<String, MessageSender>();

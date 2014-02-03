@@ -3,7 +3,7 @@ package appLogic.strategies;
 import appLogic.Application;
 import appLogic.DeferredMessagesManager;
 import appLogic.LogicalClock;
-import appLogic.OkMessageManagerWhileEntering;
+import appLogic.OkMessageManagerForEnteringState;
 import appLogic.interfaces.IMessageHandlingStrategy;
 import appLogic.utils.Order;
 import com.google.common.net.InetAddresses;
@@ -16,9 +16,9 @@ import java.net.InetAddress;
 public class EnteringStrategy implements IMessageHandlingStrategy {
 
     private final DeferredMessagesManager defferedMsgManager;
-    private final OkMessageManagerWhileEntering okRecorder;
+    private final OkMessageManagerForEnteringState okRecorder;
 
-    public EnteringStrategy(DeferredMessagesManager defferedMsgManager, OkMessageManagerWhileEntering okRecorder) {
+    public EnteringStrategy(DeferredMessagesManager defferedMsgManager, OkMessageManagerForEnteringState okRecorder) {
         this.defferedMsgManager = defferedMsgManager;
         this.okRecorder = okRecorder;
     }

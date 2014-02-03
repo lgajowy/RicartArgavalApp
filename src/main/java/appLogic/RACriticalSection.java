@@ -7,12 +7,10 @@ import networking.OutputConnectionManager;
 
 public class RACriticalSection {
     private static SectionState raSectionState = SectionState.idle;
-
     private DeferredMessagesManager deferredMsgManager;
+    private OkMessageManagerForEnteringState okAnswerRecorder;
 
-    private OkMessageManagerWhileEntering okAnswerRecorder;
-
-    public RACriticalSection(DeferredMessagesManager deferredMsgManager, OkMessageManagerWhileEntering okRecorder) {
+    public RACriticalSection(DeferredMessagesManager deferredMsgManager, OkMessageManagerForEnteringState okRecorder) {
         this.deferredMsgManager = deferredMsgManager;
         this.okAnswerRecorder = okRecorder;
     }
@@ -21,7 +19,7 @@ public class RACriticalSection {
         setRaSectionState(SectionState.enteringSection);
         OutputConnectionManager.sendMessageToAllConnectedNodes(new Message(LogicalClock.getValue(), MessageType.order));
 
-        okAnswerRecorder.waitForAllOkAnswersOrTimeout();
+        okAnswerRecorder.waitForAllOkAnswersOrForTimeout();
         enter();
     }
 
@@ -42,5 +40,4 @@ public class RACriticalSection {
     public static SectionState getRaSectionState() {
         return raSectionState;
     }
-
 }

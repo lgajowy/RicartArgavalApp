@@ -15,9 +15,9 @@ import java.net.InetAddress;
 public class MessageInterpreter implements IMessageArrivedListener {
 
     private DeferredMessagesManager defferedMsgManager;
-    private OkMessageManagerWhileEntering okRecorder;
+    private OkMessageManagerForEnteringState okRecorder;
 
-    public MessageInterpreter(DeferredMessagesManager msgManager, OkMessageManagerWhileEntering okRecorder) {
+    public MessageInterpreter(DeferredMessagesManager msgManager, OkMessageManagerForEnteringState okRecorder) {
         this.defferedMsgManager = msgManager;
         this.okRecorder = okRecorder;
     }

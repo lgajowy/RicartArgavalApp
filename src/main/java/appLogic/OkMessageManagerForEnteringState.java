@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class OkMessageManagerWhileEntering {
+public class OkMessageManagerForEnteringState {
 
     private Timer okAwaitingTimer;
     private ArrayList<String> addresses;
     private Object okAnswerSync;
 
-    public OkMessageManagerWhileEntering() {
+    public OkMessageManagerForEnteringState() {
         addresses = new ArrayList<String>();
         okAnswerSync = new Object();
         okAwaitingTimer = new Timer();
@@ -29,7 +29,7 @@ public class OkMessageManagerWhileEntering {
         }
     }
 
-    public void waitForAllOkAnswersOrTimeout() {
+    public void waitForAllOkAnswersOrForTimeout() {
         okAwaitingTimer.schedule(new WaitingForOkEnded(), Application.getOccuptaionTime() * Application.getTotalNumberOfNeighborNodes());
         synchronized (okAnswerSync) {
             System.out.println("Waiting for all nodes approval...");

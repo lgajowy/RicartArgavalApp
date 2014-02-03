@@ -4,23 +4,24 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class SectionResidence {
-    private  RACriticalSection section;
 
     public SectionResidence(int maxResidenceTime, final RACriticalSection section) {
-        this.section = section;
-        Timer residingTimeCounter = new Timer();
-
-        int time = (int) (maxResidenceTime * Math.random());
+        int occupationTime = (int) (maxResidenceTime * Math.random());
         System.out.println("Entered section.");
-        residingTimeCounter.schedule(new ExitSectionTask(), time);
+        new Timer().schedule(new ExitSectionTask(section), occupationTime);
     }
 
     class ExitSectionTask extends TimerTask {
+        private  RACriticalSection section;
+
+        ExitSectionTask(RACriticalSection section) {
+            this.section = section;
+        }
+
         @Override
         public void run() {
             System.out.println("Leaving section.");
             section.leave();
         }
     }
-
 }

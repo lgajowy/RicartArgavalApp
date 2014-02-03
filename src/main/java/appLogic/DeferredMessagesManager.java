@@ -1,6 +1,5 @@
 package appLogic;
 
-import appLogic.states.SectionState;
 import appLogic.utils.Order;
 import json.Message;
 import json.utils.MessageType;
@@ -10,7 +9,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class DeferredMessagesManager {
-    private  Queue<Order> deferredOrders = new LinkedList<Order>();
+    private Queue<Order> deferredOrders = new LinkedList<Order>();
 
     public void allowDeferredNodesEnterSection() {
         for (Order deferredOrder : deferredOrders) {
