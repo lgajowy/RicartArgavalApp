@@ -12,20 +12,21 @@ import java.io.IOException;
 public class ConfigParserTest extends TestCase {
 
     public static final String TEST_CONFIG_FILE_PATH = "config.json";
-    public static final int OCCUPATION_TIME = 100;
+    public static final Long OCCUPATION_TIME = new Long(100);
 
     public void setUp() throws Exception {
         super.setUp();
 
         JSONObject configuration = new JSONObject();
-        configuration.put("occupationTime", "100");
-        configuration.put("hostAddress", "127.0.0.1");
+
+        JSONObject nodeAddressAndPort = prepareJSONAddressAndPort("127.0.0.1", 2000);
         JSONArray addresses = new JSONArray();
+        addresses.add(prepareJSONAddressAndPort("1.1.1.1", 1111));
+        addresses.add(prepareJSONAddressAndPort("2.2.2.2", 2222));
+        addresses.add(prepareJSONAddressAndPort("3.3.3.3", 3333));
 
-        addresses.add(prepareJSONAddressAndPort("1.1.1.1", "1111"));
-        addresses.add(prepareJSONAddressAndPort("2.2.2.2", "2222"));
-        addresses.add(prepareJSONAddressAndPort("3.3.3.3", "3333"));
-
+        configuration.put("occupationTime", OCCUPATION_TIME);
+        configuration.put("thisNodeAddressAndPort", nodeAddressAndPort);
         configuration.put("addressesAndPorts", addresses);
 
         try {
@@ -39,11 +40,10 @@ public class ConfigParserTest extends TestCase {
         }
     }
 
-    private JSONObject prepareJSONAddressAndPort(String ipAddress, String port) {
+    private JSONObject prepareJSONAddressAndPort(String ipAddress, int port) {
         JSONObject addresAndPortJSON = new JSONObject();
-        addresAndPortJSON.put("ipAddress", ipAddress);
+        addresAndPortJSON.put("address", ipAddress);
         addresAndPortJSON.put("port", port);
-
         return addresAndPortJSON;
     }
 
@@ -64,14 +64,22 @@ public class ConfigParserTest extends TestCase {
         ConfigParser parser = new ConfigParser(TEST_CONFIG_FILE_PATH);
         JSONArray addresses = new JSONArray();
 
-        addresses.add(prepareJSONAddressAndPort("1.1.1.1", "1111"));
-        addresses.add(prepareJSONAddressAndPort("2.2.2.2", "2222"));
-        addresses.add(prepareJSONAddressAndPort("3.3.3.3", "3333"));
+        addresses.add(prepareJSONAddressAndPort("1.1.1.1", 1111));
+        addresses.add(prepareJSONAddressAndPort("2.2.2.2", 2222));
+        addresses.add(prepareJSONAddressAndPort("3.3.3.3", 3333));
+
         assertEquals(addresses, parser.getOtherNodesAddressesAndPorts());
     }
 
-    public void testGetThisHostAddress() throws Exception {
+    public void testGetThisNodeAddress() throws Exception {
         ConfigParser parser = new ConfigParser(TEST_CONFIG_FILE_PATH);
-        assertEquals("127.0.0.1", parser.getThisHostAddress());
+        assertEquals("127.0.0.1", parser.getThisNodeAddress());
+    }
+
+    public void testGetThisNodePort() throws Exception {
+        ConfigParser parser = new ConfigParser(TEST_CONFIG_FILE_PATH);
+        assertEquals(new Long(2000), parser.getThisNodePort());
+
+
     }
 }

@@ -4,12 +4,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class SectionResidence {
-    private Timer residingTimeCounter;
     private  RACriticalSection section;
 
     public SectionResidence(int maxResidenceTime, final RACriticalSection section) {
         this.section = section;
-        residingTimeCounter = new Timer();
+        Timer residingTimeCounter = new Timer();
 
         int time = (int) (maxResidenceTime * Math.random());
         System.out.println("Entered section.");

@@ -4,7 +4,6 @@ import json.ConfigParser;
 import networking.InputConnectionManager;
 import networking.OutputConnectionManager;
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -12,17 +11,18 @@ import java.util.Scanner;
 
 public class Application {
 
-    private static InetAddress thisHostIPAddress = null;
-    private static int occuptaionTime = 0;
-    private static int totalNumberOfNeighborNodes = 3; //TODO: for now.
+    private static InetAddress thisNodeIPAddress = null;
+    private static Integer thisNodePort = null;
+    private static Integer occuptaionTime = 0;
+    private static int totalNumberOfNeighborNodes = 3;
     private static String enteredText;
 
-    public static int getOccuptaionTime() {
+    public static Integer getOccuptaionTime() {
         return occuptaionTime;
     }
 
-    public static InetAddress getThisHostIPAddress() {
-        return thisHostIPAddress;
+    public static InetAddress getThisNodeIPAddress() {
+        return thisNodeIPAddress;
     }
 
     public static void main(String[] args) {
@@ -34,17 +34,21 @@ public class Application {
         MessageInterpreter incomingJsonMsgIngerpretter = new MessageInterpreter(msgManager);
 
         try {
-            thisHostIPAddress = InetAddress.getByName(configurationParser.getThisHostAddress());
-            occuptaionTime = configurationParser.getCriticalSectionOccupationTime();
+            thisNodeIPAddress = InetAddress.getByName(configurationParser.getThisNodeAddress());
+            thisNodePort = getIntOrNull(configurationParser.getThisNodePort());
+            occuptaionTime = getIntOrNull(configurationParser.getCriticalSectionOccupationTime());
             JSONArray addressesAndPorts = (JSONArray) configurationParser.getOtherNodesAddressesAndPorts();
             totalNumberOfNeighborNodes = addressesAndPorts.size();
-            initInputAndOutputConnections(addressesAndPorts, incomingJsonMsgIngerpretter);
+            startConnections(addressesAndPorts, incomingJsonMsgIngerpretter);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
 
-
         scanStandardInputForCommands(section);
+    }
+
+    public static Integer getIntOrNull(Long value) {
+        return value <= Integer.MAX_VALUE ? value.intValue() : null;
     }
 
     private static void parseInputArguments(String[] args) {
@@ -58,14 +62,14 @@ public class Application {
         System.err.println("Please provide path to configuration file as program argument!");
     }
 
-    private static void initInputAndOutputConnections(JSONArray addressesAndPorts, MessageInterpreter incomingJsonMsgIngerpretter) {
-        JSONObject addressAndPort;
-        OutputConnectionManager outputConnectionManager = new OutputConnectionManager(totalNumberOfNeighborNodes);
-        for (int i = 0; i < addressesAndPorts.size(); i++) {
-            addressAndPort = (JSONObject) addressesAndPorts.get(i);
-            outputConnectionManager.connectToServer(addressAndPort.get("ipAddress").toString(), Integer.parseInt((String) addressAndPort.get("port")));
-        }
-        InputConnectionManager inputConnectionManager = new InputConnectionManager(44444, totalNumberOfNeighborNodes, incomingJsonMsgIngerpretter);
+    private static void startConnections(JSONArray addressesAndPorts, MessageInterpreter incomingJsonMsgIngerpretter) {
+        OutputConnectionManager outputConections = new OutputConnectionManager(totalNumberOfNeighborNodes);
+        outputConections.startMultipleOutputConnections(addressesAndPorts);
+        startInputConnections(incomingJsonMsgIngerpretter);
+    }
+
+    private static void startInputConnections(MessageInterpreter incomingJsonMsgIngerpretter) {
+        InputConnectionManager inputConnectionManager = new InputConnectionManager(thisNodePort, totalNumberOfNeighborNodes, incomingJsonMsgIngerpretter);
         new Thread(inputConnectionManager).start();
     }
 

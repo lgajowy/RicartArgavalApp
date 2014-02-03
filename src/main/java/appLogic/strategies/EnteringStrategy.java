@@ -3,7 +3,6 @@ package appLogic.strategies;
 import appLogic.Application;
 import appLogic.DeferredMessagesManager;
 import appLogic.LogicalClock;
-import appLogic.RACriticalSection;
 import appLogic.interfaces.IMessageHandlingStrategy;
 import appLogic.utils.Order;
 import com.google.common.net.InetAddresses;
@@ -38,7 +37,7 @@ public class EnteringStrategy implements IMessageHandlingStrategy {
     }
 
     private boolean hasSmallerAddressThanThisApp(InetAddress address) {
-        if (InetAddresses.coerceToInteger(address) < InetAddresses.coerceToInteger(Application.getThisHostIPAddress())) {
+        if (InetAddresses.coerceToInteger(address) < InetAddresses.coerceToInteger(Application.getThisNodeIPAddress())) {
             return true;
         }
         return false;

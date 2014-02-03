@@ -8,7 +8,7 @@ import java.net.UnknownHostException;
 
 public class MessageSender implements Runnable {
 
-    private final int SLEEP_TIME = 3000;
+    private final int RECONNECTION_PEIROD = 3000;
 
     private String ipAddress;
     private int port;
@@ -34,7 +34,7 @@ public class MessageSender implements Runnable {
         } catch (ConnectException e) {
             //e.printStackTrace();
             try {
-                Thread.sleep(SLEEP_TIME);
+                Thread.sleep(RECONNECTION_PEIROD);
             } catch (InterruptedException e1) {
                 e1.printStackTrace();
             }

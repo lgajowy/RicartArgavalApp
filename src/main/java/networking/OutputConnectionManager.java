@@ -1,8 +1,11 @@
 package networking;
 
+import appLogic.Application;
 import json.Message;
+import org.json.simple.JSONObject;
 
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -13,12 +16,25 @@ public class OutputConnectionManager {
     private static ExecutorService messageThreads;
     private static HashMap<String, MessageSender> messageSenders;
 
+
     public OutputConnectionManager(int expectedUsersAmount) {
         this.messageThreads = Executors.newFixedThreadPool(expectedUsersAmount);
         this.messageSenders = new HashMap<String, MessageSender>();
     }
 
-    public void connectToServer(String ipAddress, int port) {
+    public void startMultipleOutputConnections(ArrayList addressesAndPorts) {
+        JSONObject addressAndPort;
+        for (int i = 0; i < addressesAndPorts.size(); i++) {
+            try {
+                addressAndPort = (JSONObject) addressesAndPorts.get(i);
+                connectToServer(addressAndPort.get("address").toString(), Application.getIntOrNull((Long) addressAndPort.get("port")));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    private void connectToServer(String ipAddress, int port) {
         try {
             MessageSender sender = new MessageSender(ipAddress, port);
             messageThreads.submit(sender);

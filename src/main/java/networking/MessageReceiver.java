@@ -57,7 +57,6 @@ public class MessageReceiver implements Runnable {
             int indexOfLeftBracket = line.lastIndexOf("{");
             int indexOfRightBracket = line.indexOf("}", indexOfLeftBracket);
             actualState = MessageState.determineMessageState(indexOfLeftBracket, indexOfRightBracket, previousState);
-            System.err.println(actualState);
 
             if (actualState == MessageState.oneliner) {
                 message = new StringBuilder(line.substring(indexOfLeftBracket, indexOfRightBracket + 1));
@@ -70,9 +69,7 @@ public class MessageReceiver implements Runnable {
             } else if (actualState == MessageState.ended) {
                 assert message != null;
                 message.append(line, 0, indexOfRightBracket + 1);
-            } else {
-                System.err.println(actualState);
-            }
+            } 
             previousState = actualState;
 
             if (actualState == MessageState.ended || actualState == MessageState.oneliner) {
