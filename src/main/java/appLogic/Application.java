@@ -25,13 +25,18 @@ public class Application {
         return thisNodeIPAddress;
     }
 
+    public static int getTotalNumberOfNeighborNodes() {
+        return totalNumberOfNeighborNodes;
+    }
+
     public static void main(String[] args) {
         parseInputArguments(args);
         ConfigParser configurationParser = new ConfigParser(args[0]);
 
         DeferredMessagesManager msgManager = new DeferredMessagesManager();
-        RACriticalSection section = new RACriticalSection(msgManager);
-        MessageInterpreter incomingJsonMsgIngerpretter = new MessageInterpreter(msgManager);
+        OkMessageManagerWhileEntering okRecorder = new OkMessageManagerWhileEntering();
+        RACriticalSection section = new RACriticalSection(msgManager, okRecorder);
+        MessageInterpreter incomingJsonMsgIngerpretter = new MessageInterpreter(msgManager, okRecorder);
 
         try {
             thisNodeIPAddress = InetAddress.getByName(configurationParser.getThisNodeAddress());
@@ -78,7 +83,7 @@ public class Application {
         while (input.hasNext()) {
             enteredText = input.nextLine();
             if (enteredText.contains("enter")) {
-                section.preEnter();
+                section.startEnteringSection();
             } else if (enteredText.contains("leave")) {
                 section.leave();
             } else if (enteredText.contains("quit")) {

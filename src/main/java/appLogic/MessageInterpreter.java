@@ -15,9 +15,11 @@ import java.net.InetAddress;
 public class MessageInterpreter implements IMessageArrivedListener {
 
     private DeferredMessagesManager defferedMsgManager;
+    private OkMessageManagerWhileEntering okRecorder;
 
-    public MessageInterpreter(DeferredMessagesManager msgManager) {
+    public MessageInterpreter(DeferredMessagesManager msgManager, OkMessageManagerWhileEntering okRecorder) {
         this.defferedMsgManager = msgManager;
+        this.okRecorder = okRecorder;
     }
 
     @Override
@@ -65,7 +67,7 @@ public class MessageInterpreter implements IMessageArrivedListener {
             case occupiedSection:
                 return new OccupiedSectionStrategy(defferedMsgManager);
             case enteringSection:
-                return new EnteringStrategy(defferedMsgManager);
+                return new EnteringStrategy(defferedMsgManager, okRecorder);
         }
         return null;
     }

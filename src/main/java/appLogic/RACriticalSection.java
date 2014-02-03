@@ -10,19 +10,23 @@ public class RACriticalSection {
 
     private DeferredMessagesManager deferredMsgManager;
 
-    public RACriticalSection(DeferredMessagesManager deferredMsgManager) {
+    private OkMessageManagerWhileEntering okAnswerRecorder;
+
+    public RACriticalSection(DeferredMessagesManager deferredMsgManager, OkMessageManagerWhileEntering okRecorder) {
         this.deferredMsgManager = deferredMsgManager;
+        this.okAnswerRecorder = okRecorder;
     }
 
-    public void preEnter() {
+    public void startEnteringSection() {
         setRaSectionState(SectionState.enteringSection);
         OutputConnectionManager.sendMessageToAllConnectedNodes(new Message(LogicalClock.getValue(), MessageType.order));
 
-        //TODO: timer?
-
+        okAnswerRecorder.waitForAllOkAnswersOrTimeout();
+        enter();
     }
 
-    public void enter() {
+    private void enter() {
+        setRaSectionState(SectionState.occupiedSection);
         new SectionResidence(Application.getOccuptaionTime(), this);
     }
 
@@ -38,4 +42,5 @@ public class RACriticalSection {
     public static SectionState getRaSectionState() {
         return raSectionState;
     }
+
 }
