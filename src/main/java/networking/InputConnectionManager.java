@@ -3,6 +3,7 @@ package networking;
 import appLogic.interfaces.IMessageArrivedListener;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
@@ -11,18 +12,18 @@ import java.util.concurrent.Executors;
 
 public class InputConnectionManager implements Runnable {
 
-    private ExecutorService messageThreads;
-    private HashMap<String, MessageReceiver> messageReceivers;
+    private ExecutorService inputConnectionThreadPool;
+    private HashMap<InetAddress, MessageReceiver> messageReceivers;
     private ServerSocket socket;
     private boolean isWorking;
     private int portToListenOn;
     private IMessageArrivedListener jsonMessageHandler;
-    private String hostAddress;
+    private InetAddress hostAddress;
 
     public InputConnectionManager(int portToListenOn, int expectedUsersAmount, IMessageArrivedListener messageInterpreter) {
         this.portToListenOn = portToListenOn;
-        this.messageThreads = Executors.newFixedThreadPool(expectedUsersAmount);
-        this.messageReceivers = new HashMap<String, MessageReceiver>();
+        this.inputConnectionThreadPool = Executors.newFixedThreadPool(expectedUsersAmount);
+        this.messageReceivers = new HashMap<InetAddress, MessageReceiver>();
         this.jsonMessageHandler = messageInterpreter;
     }
 
@@ -30,15 +31,11 @@ public class InputConnectionManager implements Runnable {
         while (isWorking) {
             Socket clientSocket = socket.accept();
             MessageReceiver reader = new MessageReceiver(clientSocket, this.jsonMessageHandler);
-            messageThreads.submit(reader);
-            hostAddress = clientSocket.getInetAddress().getHostAddress();
+            inputConnectionThreadPool.submit(reader);
+            hostAddress = clientSocket.getInetAddress();
             messageReceivers.put(hostAddress, reader);
             System.err.println("Accepted connection: " + hostAddress);
         }
-    }
-
-    public MessageReceiver getMessageReceiver(String ipAddress) {
-        return messageReceivers.get(ipAddress);
     }
 
     @Override
