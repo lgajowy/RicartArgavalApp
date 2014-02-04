@@ -17,6 +17,7 @@ public class RACriticalSection {
 
     public void startEnteringSection() {
         setRaSectionState(SectionState.enteringSection);
+        LogicalClock.increment();
         OutputConnectionManager.sendMessageToAllConnectedNodes(new Message(LogicalClock.getValue(), MessageType.order));
 
         okAnswerRecorder.waitForAllOkAnswersOrForTimeout();

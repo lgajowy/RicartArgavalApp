@@ -25,9 +25,9 @@ public class EnteringStrategy implements IMessageHandlingStrategy {
 
     @Override
     public void handleOrderMessage(Order incomingOrder) {
-        if (LogicalClock.getValue() > incomingOrder.getClockValue()) {
+        if (LogicalClock.getValueBeforeSynchronization() > incomingOrder.getClockValue()) {
             OutputConnectionManager.sendMessageToNode(new Message(LogicalClock.getValue(), MessageType.ok), incomingOrder.getAddress());
-        } else if (LogicalClock.getValue() < incomingOrder.getClockValue()) {
+        } else if (LogicalClock.getValueBeforeSynchronization() < incomingOrder.getClockValue()) {
             deferOrder(incomingOrder);
         } else {
             if (hasSmallerAddressThanThisApp(incomingOrder.getAddress())) {

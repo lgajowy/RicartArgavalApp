@@ -39,12 +39,12 @@ public class MessageInterpreter implements IMessageArrivedListener {
     }
 
     private void handleMessage(Message obtainedMessage, InetAddress iNetAddress) {
-       // LogicalClock.synchronize(obtainedMessage.getClockValue());  //TODO: Fixme! w przypadku, gdy przyjdzie order a ja bede chciał wejść - nie mogę porównać dobrze czasu!
+        LogicalClock.synchronizeOrIncrementClock(obtainedMessage.getClockValue());
 
         if (obtainedMessage != null) {
             switch (obtainedMessage.getMessageType()) {
                 case ok:
-                    getStrategy().handleOkMessage(iNetAddress);   ///TODO: Don't i have to pass logical clock value here?? (as below new eg. Ok())
+                    getStrategy().handleOkMessage(iNetAddress);
                     break;
                 case order:
                     getStrategy().handleOrderMessage(new Order(iNetAddress, obtainedMessage.getClockValue()));

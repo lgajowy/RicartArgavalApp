@@ -29,29 +29,6 @@ public class Application {
         return totalNumberOfNeighborNodes;
     }
 
-    public static void main(String[] args) {
-        parseInputArguments(args);
-        ConfigParser configurationParser = new ConfigParser(args[0]);
-
-        DeferredMessagesManager msgManager = new DeferredMessagesManager();
-        OkMessageManagerForEnteringState okRecorder = new OkMessageManagerForEnteringState();
-        RACriticalSection section = new RACriticalSection(msgManager, okRecorder);
-        MessageInterpreter incomingJsonMsgIngerpretter = new MessageInterpreter(msgManager, okRecorder);
-
-        try {
-            thisNodeIPAddress = InetAddress.getByName(configurationParser.getThisNodeAddress());
-            thisNodePort = getIntOrNull(configurationParser.getThisNodePort());
-            occuptaionTime = getIntOrNull(configurationParser.getCriticalSectionOccupationTime());
-            JSONArray addressesAndPorts = (JSONArray) configurationParser.getOtherNodesAddressesAndPorts();
-            totalNumberOfNeighborNodes = addressesAndPorts.size();
-            startConnections(addressesAndPorts, incomingJsonMsgIngerpretter);
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-
-        scanStandardInputForCommands(section);
-    }
-
     public static Integer getIntOrNull(Long value) {
         return value <= Integer.MAX_VALUE ? value.intValue() : null;
     }
@@ -92,6 +69,29 @@ public class Application {
             }
         }
         input.close();
+    }
+
+    public static void main(String[] args) {
+        parseInputArguments(args);
+        ConfigParser configurationParser = new ConfigParser(args[0]);
+
+        DeferredMessagesManager msgManager = new DeferredMessagesManager();
+        OkMessageManagerForEnteringState okRecorder = new OkMessageManagerForEnteringState();
+        RACriticalSection section = new RACriticalSection(msgManager, okRecorder);
+        MessageInterpreter incomingJsonMsgIngerpretter = new MessageInterpreter(msgManager, okRecorder);
+
+        try {
+            thisNodeIPAddress = InetAddress.getByName(configurationParser.getThisNodeAddress());
+            thisNodePort = getIntOrNull(configurationParser.getThisNodePort());
+            occuptaionTime = getIntOrNull(configurationParser.getCriticalSectionOccupationTime());
+            JSONArray addressesAndPorts = (JSONArray) configurationParser.getOtherNodesAddressesAndPorts();
+            totalNumberOfNeighborNodes = addressesAndPorts.size();
+            startConnections(addressesAndPorts, incomingJsonMsgIngerpretter);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
+        scanStandardInputForCommands(section);
     }
 }
 
