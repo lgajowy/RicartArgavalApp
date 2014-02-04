@@ -1,10 +1,10 @@
 package json;
 
-import junit.framework.TestCase;
 import json.utils.MessageType;
+import junit.framework.TestCase;
 import org.junit.Test;
 
-public class MessageTest  extends TestCase {
+public class MessageTest extends TestCase {
 
     private static final Long CLOCK_VALUE = new Long(1);
     private static final MessageType OK = MessageType.ok;

@@ -26,7 +26,7 @@ public class RACriticalSection {
 
     private void enter() {
         setRaSectionState(SectionState.occupiedSection);
-        new SectionResidence(Application.getOccuptaionTime(), this);
+        new SectionResidence(Application.getOccupationTime(), this);
     }
 
     public void leave() {

@@ -19,5 +19,6 @@ public class IdleStrategy implements IMessageHandlingStrategy {
     }
 
     @Override
-    public void handleOkMessage(InetAddress incommingMsgAddress) { }
+    public void handleOkMessage(InetAddress incommingMsgAddress) {
+    }
 }

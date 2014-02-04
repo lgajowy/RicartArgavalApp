@@ -1,7 +1,7 @@
 package json;
 
-import junit.framework.TestCase;
 import json.utils.MessageType;
+import junit.framework.TestCase;
 
 public class MessageParserTest extends TestCase {
 

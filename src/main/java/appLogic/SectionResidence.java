@@ -12,7 +12,7 @@ public class SectionResidence {
     }
 
     class ExitSectionTask extends TimerTask {
-        private  RACriticalSection section;
+        private RACriticalSection section;
 
         ExitSectionTask(RACriticalSection section) {
             this.section = section;

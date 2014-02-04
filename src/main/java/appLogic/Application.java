@@ -13,12 +13,12 @@ public class Application {
 
     private static InetAddress thisNodeIPAddress = null;
     private static Integer thisNodePort = null;
-    private static Integer occuptaionTime = 0;
+    private static Integer occupationTime = 0;
     private static int totalNumberOfNeighborNodes = 3;
     private static String enteredText;
 
-    public static Integer getOccuptaionTime() {
-        return occuptaionTime;
+    public static Integer getOccupationTime() {
+        return occupationTime;
     }
 
     public static InetAddress getThisNodeIPAddress() {
@@ -83,7 +83,7 @@ public class Application {
         try {
             thisNodeIPAddress = InetAddress.getByName(configurationParser.getThisNodeAddress());
             thisNodePort = getIntOrNull(configurationParser.getThisNodePort());
-            occuptaionTime = getIntOrNull(configurationParser.getCriticalSectionOccupationTime());
+            occupationTime = getIntOrNull(configurationParser.getCriticalSectionOccupationTime());
             JSONArray addressesAndPorts = (JSONArray) configurationParser.getOtherNodesAddressesAndPorts();
             totalNumberOfNeighborNodes = addressesAndPorts.size();
             startConnections(addressesAndPorts, incomingJsonMsgIngerpretter);

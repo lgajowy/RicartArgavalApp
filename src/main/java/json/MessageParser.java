@@ -3,7 +3,6 @@ package json;
 import com.google.common.primitives.Ints;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 public class MessageParser extends JSONParser {
     private JSONObject parsedObject;

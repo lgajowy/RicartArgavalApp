@@ -4,9 +4,9 @@ import appLogic.interfaces.IMessageArrivedListener;
 import networking.events.MessageArrived;
 import networking.utils.MessageState;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.Socket;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
@@ -69,7 +69,7 @@ public class MessageReceiver implements Runnable {
             } else if (actualState == MessageState.ended) {
                 assert message != null;
                 message.append(line, 0, indexOfRightBracket + 1);
-            } 
+            }
             previousState = actualState;
 
             if (actualState == MessageState.ended || actualState == MessageState.oneliner) {
