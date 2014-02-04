@@ -3,6 +3,7 @@ package networking;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ConnectException;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -10,20 +11,20 @@ public class MessageSender implements Runnable {
 
     private final int RECONNECTION_PEIROD = 3000;
 
-    private String ipAddress;
+    private String address;
     private int port;
 
     private Socket outputSocket;
     private DataOutputStream outToServer;
 
-    public MessageSender(String ipAddress, int port) throws InterruptedException {
-        this.ipAddress = ipAddress;
+    public MessageSender(String address, int port) throws InterruptedException {
+        this.address = address;
         this.port = port;
     }
 
     @Override
     public void run() {
-        establishConnection(ipAddress, port);
+        establishConnection(address, port);
         System.out.println("connection established!");
     }
 
@@ -54,7 +55,7 @@ public class MessageSender implements Runnable {
                 outToServer.writeBytes(message);
             } catch (IOException e) {
                 System.err.println("Connection has been broken! Reconnecting...");
-                establishConnection(ipAddress, port);
+                establishConnection(address, port);
                 System.err.println("Repeating message");
                 writeMessageToClient(message);
             }

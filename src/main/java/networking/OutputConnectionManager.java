@@ -13,12 +13,37 @@ import java.util.concurrent.Executors;
 
 public class OutputConnectionManager {
 
-    private static ExecutorService messageThreads;
-    private static HashMap<String, MessageSender> messageSenders;
+    private static ExecutorService outputConnectionsThreadPool;
+    private static HashMap<InetAddress, MessageSender> messageSenders;
 
-    public OutputConnectionManager(int expectedUsersAmount) {
-        this.messageThreads = Executors.newFixedThreadPool(expectedUsersAmount);
-        this.messageSenders = new HashMap<String, MessageSender>();
+    public OutputConnectionManager(int connectionThreadsAmount) {
+        this.outputConnectionsThreadPool = Executors.newFixedThreadPool(connectionThreadsAmount * 2);
+        this.messageSenders = new HashMap<InetAddress, MessageSender>();
+    }
+
+    public static void sendMessageToNode(final Message message, final InetAddress address) {
+        outputConnectionsThreadPool.submit(new Runnable() {
+            @Override
+            public void run() {
+                messageSenders.get(address).writeMessageToClient(message.toString());
+            }
+        });
+    }
+
+    public static void sendMessageToAllConnectedNodes(final Message message) {
+        for (Map.Entry<InetAddress, MessageSender> msgSender : messageSenders.entrySet()) {
+            sendMessageToNode(message, msgSender.getKey());
+        }
+    }
+
+    private void connectToServer(InetAddress address, int port) {
+        try {
+            MessageSender sender = new MessageSender(address.getHostAddress(), port);
+            outputConnectionsThreadPool.submit(sender);
+            messageSenders.put(address, sender);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void startMultipleOutputConnections(ArrayList addressesAndPorts) {
@@ -26,31 +51,10 @@ public class OutputConnectionManager {
         for (int i = 0; i < addressesAndPorts.size(); i++) {
             try {
                 addressAndPort = (JSONObject) addressesAndPorts.get(i);
-                connectToServer(addressAndPort.get("address").toString(), Application.getIntOrNull((Long) addressAndPort.get("port")));
+                connectToServer(InetAddress.getByName(addressAndPort.get("address").toString()), Application.getIntOrNull((Long) addressAndPort.get("port")));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
-    }
-
-    private void connectToServer(String ipAddress, int port) {
-        try {
-            MessageSender sender = new MessageSender(ipAddress, port);
-            messageThreads.submit(sender);
-            messageSenders.put(ipAddress, sender);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void sendMessageToAllConnectedNodes(Message message) {
-        for (Map.Entry<String, MessageSender> msgSender : messageSenders.entrySet()) {
-            msgSender.getValue().writeMessageToClient(message.toString());
-        }
-    }
-
-    public static void sendMessageToNode(Message message, InetAddress address) {
-        MessageSender ms = messageSenders.get(address.getHostAddress());
-        ms.writeMessageToClient(message.toString());
     }
 }
