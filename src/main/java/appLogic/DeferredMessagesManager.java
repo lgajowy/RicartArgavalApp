@@ -20,6 +20,10 @@ public class DeferredMessagesManager {
     }
 
     public synchronized void putOrderInDeferredQueue(Order order) {
-        deferredOrders.add(order);
+        if (!deferredOrders.contains(order)) {
+            deferredOrders.add(order);
+        } else {
+            System.err.println("order from host: " + order.getAddress().getHostName() + " is already in queue.");
+        }
     }
 }
