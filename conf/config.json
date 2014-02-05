@@ -1,5 +1,5 @@
 {
-"thisNodeAddressAndPort":{"port":2000,"address":"127.0.0.1"},
-"addressesAndPorts":[{"port":2001,"address":"127.0.0.1"}],
-"occupationTime":3000
+"thisNodeAddressAndPort":{"port":20000,"address":"192.168.43.75"},
+"addressesAndPorts":[{"port":20000,"address":"192.168.43.26"},{"port":20000,"address":"192.168.43.180"}],
+"occupationTime":5000
 }
