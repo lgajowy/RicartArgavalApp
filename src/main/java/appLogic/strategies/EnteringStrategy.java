@@ -51,6 +51,6 @@ public class EnteringStrategy implements IMessageHandlingStrategy {
 
     @Override
     public void handleOkMessage(InetAddress incommingMsgAddress) {
-        okRecorder.recordOkAnswerFromNode(incommingMsgAddress.getHostName());
+        okRecorder.recordOkAnswerFromNode(incommingMsgAddress.getHostAddress().toString());
     }
 }

@@ -4,9 +4,12 @@ import json.ConfigParser;
 import networking.InputConnectionManager;
 import networking.OutputConnectionManager;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Scanner;
 
 public class Application {
@@ -15,7 +18,12 @@ public class Application {
     private static Integer thisNodePort = null;
     private static Integer occupationTime = 0;
     private static int totalNumberOfNeighborNodes = 3;
+    private static HashSet<String> otherNodesAddresses = new HashSet<String>();
     private static String enteredText;
+
+    public static HashSet<String> getOtherNodesAddresses() {
+        return otherNodesAddresses;
+    }
 
     public static Integer getOccupationTime() {
         return occupationTime;
@@ -81,16 +89,24 @@ public class Application {
         MessageInterpreter incomingJsonMsgIngerpretter = new MessageInterpreter(msgManager, okRecorder);
 
         try {
+
             thisNodeIPAddress = InetAddress.getByName(configurationParser.getThisNodeAddress());
             thisNodePort = getIntOrNull(configurationParser.getThisNodePort());
             occupationTime = getIntOrNull(configurationParser.getCriticalSectionOccupationTime());
             JSONArray addressesAndPorts = (JSONArray) configurationParser.getOtherNodesAddressesAndPorts();
             totalNumberOfNeighborNodes = addressesAndPorts.size();
+
+            //todo: Oooglayy hack. ;/
+            JSONObject obj;
+            for (int i = 0; i < addressesAndPorts.size(); i++) {
+                obj = (JSONObject) addressesAndPorts.get(i);
+                otherNodesAddresses.add((String) obj.get("address"));
+            }
+
             startConnections(addressesAndPorts, incomingJsonMsgIngerpretter);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-
         scanStandardInputForCommands(section);
     }
 }
