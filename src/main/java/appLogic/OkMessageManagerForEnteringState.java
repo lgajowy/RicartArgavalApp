@@ -39,7 +39,7 @@ public class OkMessageManagerForEnteringState {
 
     public void waitForAllOkAnswersOrForTimeout() {
         otherNodesAddresses = Application.getOtherNodesAddresses();
-        okAwaitingTimer.schedule(new WaitingForOkEnded(), Application.getOccupationTime() * Application.getTotalNumberOfNeighborNodes() + 1);
+        okAwaitingTimer.schedule(new WaitingForOkEnded(), Application.getOccupationTime() * (Application.getTotalNumberOfNeighborNodes() + 1));
         synchronized (okAnswerSync) {
             System.out.println("Waiting for all nodes approval...");
             try {
@@ -55,7 +55,7 @@ public class OkMessageManagerForEnteringState {
         public void run() {
             synchronized (okAnswerSync) {
                 if (!areOksCollected) {
-                    System.out.println("Waiting for all ok's from user ended. ");
+                    System.out.println("ENTERING TIMEOUTED. NO OK MESSAGES FROM: " + otherNodesAddresses);
                 }
                 areOksCollected = false;
                 okAnswerSync.notify();

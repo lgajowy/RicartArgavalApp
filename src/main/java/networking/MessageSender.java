@@ -58,6 +58,7 @@ public class MessageSender implements Runnable {
                 establishConnection(address, port);
                 System.err.println("Repeating message");
                 writeMessageToClient(message);
+                writeMessageToClient(message);  //TODO: To make sure that it went. ;/ FIXME
             }
         } else {
             System.err.println("No output connection");
