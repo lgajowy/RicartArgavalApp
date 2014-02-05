@@ -20,7 +20,6 @@ public class OccupiedSectionStrategy implements IMessageHandlingStrategy {
     }
 
     private void deferOrder(Order incomingOrder) {
-        System.out.println("deferring order");
         deferedMsgManager.putOrderInDeferredQueue(incomingOrder);
     }
 

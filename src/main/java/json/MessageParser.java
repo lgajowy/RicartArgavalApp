@@ -1,6 +1,5 @@
 package json;
 
-import com.google.common.primitives.Ints;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -17,9 +16,6 @@ public class MessageParser extends JSONParser {
         try {
             parsedObject = (JSONObject) parse(textToBeParsed);
 
-
-            //String clockValueString = getClockValue();
-            //Integer clockValue = castClockValueToInteger(clockValueString);
             Long clockValue = getClockValue();
             String messageType = getMessageType();
 
@@ -29,18 +25,9 @@ public class MessageParser extends JSONParser {
                 return null;
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("This text is not JSON!!!");
+            System.err.println("This text is not JSON (or bad format)!!!");
             return null;
         }
-    }
-
-    private Integer castClockValueToInteger(String clockValueString) {
-        Integer clockValue = null;
-        if (clockValueString != null) {
-            clockValue = Ints.tryParse(clockValueString);
-        }
-        return clockValue;
     }
 
     private Long getClockValue() {

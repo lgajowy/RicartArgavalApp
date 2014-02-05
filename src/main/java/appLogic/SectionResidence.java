@@ -6,9 +6,8 @@ import java.util.TimerTask;
 public class SectionResidence {
 
     public SectionResidence(int maxResidenceTime, final RACriticalSection section) {
-        int occupationTime = (int) (maxResidenceTime * Math.random());
-        System.out.println("Entered section.");
-        new Timer().schedule(new ExitSectionTask(section), occupationTime);
+        System.out.println("ENTERED SECTION.");
+        new Timer().schedule(new ExitSectionTask(section), maxResidenceTime);
     }
 
     class ExitSectionTask extends TimerTask {
@@ -20,7 +19,7 @@ public class SectionResidence {
 
         @Override
         public void run() {
-            System.out.println("Leaving section.");
+            System.out.println("LEAVING SECTION.");
             section.leave();
         }
     }

@@ -32,7 +32,6 @@ public class EnteringStrategy implements IMessageHandlingStrategy {
         } else {
             if (hasSmallerAddressThanThisApp(incomingOrder.getAddress())) {
                 OutputConnectionManager.sendMessageToNode(new Message(LogicalClock.getValue(), MessageType.ok), incomingOrder.getAddress());
-                //TODO: What about my order..??!!
             } else {
                 deferOrder(incomingOrder);
             }
@@ -47,7 +46,6 @@ public class EnteringStrategy implements IMessageHandlingStrategy {
     }
 
     private void deferOrder(Order incomingOrder) {
-        System.out.println("deferring order");
         defferedMsgManager.putOrderInDeferredQueue(incomingOrder);
     }
 

@@ -26,6 +26,7 @@ public class RACriticalSection {
 
     private void enter() {
         setRaSectionState(SectionState.occupiedSection);
+        LogicalClock.increment();
         new SectionResidence(Application.getOccupationTime(), this);
     }
 

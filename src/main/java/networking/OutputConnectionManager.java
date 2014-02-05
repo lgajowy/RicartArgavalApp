@@ -17,14 +17,15 @@ public class OutputConnectionManager {
     private static HashMap<InetAddress, MessageSender> messageSenders;
 
     public OutputConnectionManager(int connectionThreadsAmount) {
-        this.outputConnectionsThreadPool = Executors.newFixedThreadPool(connectionThreadsAmount * 2);
+        this.outputConnectionsThreadPool = Executors.newFixedThreadPool(30); //TODO threads don't close properly. FIXME!
         this.messageSenders = new HashMap<InetAddress, MessageSender>();
     }
 
-    public static void sendMessageToNode(final Message message, final InetAddress address) {
+    public static synchronized void sendMessageToNode(final Message message, final InetAddress address) {
         outputConnectionsThreadPool.submit(new Runnable() {
             @Override
             public void run() {
+                System.out.println("SENDING MESSAGE TO: " + address.getHostAddress().toString() + "\n" + message.toString());
                 messageSenders.get(address).writeMessageToClient(message.toString());
             }
         });

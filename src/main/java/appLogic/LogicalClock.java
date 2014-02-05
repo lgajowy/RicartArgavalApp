@@ -21,9 +21,8 @@ public class LogicalClock {
         setValueBeforeSynchronization(value);
         if (value < logicalTime) {
             value = logicalTime;
-        } else {
-            increment();
         }
+        increment();
     }
 
     public static long getValue() {

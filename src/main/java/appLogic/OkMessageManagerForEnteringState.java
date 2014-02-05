@@ -30,7 +30,7 @@ public class OkMessageManagerForEnteringState {
     }
 
     public void waitForAllOkAnswersOrForTimeout() {
-        okAwaitingTimer.schedule(new WaitingForOkEnded(), Application.getOccupationTime() * Application.getTotalNumberOfNeighborNodes());
+        okAwaitingTimer.schedule(new WaitingForOkEnded(), Application.getOccupationTime() * Application.getTotalNumberOfNeighborNodes() + 1);
         synchronized (okAnswerSync) {
             System.out.println("Waiting for all nodes approval...");
             try {

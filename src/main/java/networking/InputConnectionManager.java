@@ -22,7 +22,7 @@ public class InputConnectionManager implements Runnable {
 
     public InputConnectionManager(int portToListenOn, int expectedUsersAmount, IMessageArrivedListener messageInterpreter) {
         this.portToListenOn = portToListenOn;
-        this.inputConnectionThreadPool = Executors.newFixedThreadPool(expectedUsersAmount);
+        this.inputConnectionThreadPool = Executors.newFixedThreadPool(30); //TODO Threads dont close properly. FIXME!
         this.messageReceivers = new HashMap<InetAddress, MessageReceiver>();
         this.jsonMessageHandler = messageInterpreter;
     }

@@ -21,9 +21,10 @@ public class DeferredMessagesManager {
 
     public synchronized void putOrderInDeferredQueue(Order order) {
         if (!deferredOrders.contains(order)) {
+            System.out.println("DEFERING ORDER FROM: " + order.getAddress().getHostAddress().toString());
             deferredOrders.add(order);
         } else {
-            System.err.println("order from host: " + order.getAddress().getHostName() + " is already in queue.");
+            System.out.println("ORDER FROM : " + order.getAddress().getHostAddress().toString() + " IS ALREADY IN QUEUE.");
         }
     }
 }

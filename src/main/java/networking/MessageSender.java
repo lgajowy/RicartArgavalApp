@@ -24,12 +24,13 @@ public class MessageSender implements Runnable {
     @Override
     public void run() {
         establishConnection(address, port);
-        System.out.println("connection established!");
+        System.err.println("connection established! " + address);
     }
 
     private void establishConnection(String ipAddress, int port) {
         try {
             outputSocket = new Socket(ipAddress, port);
+            outputSocket.setTcpNoDelay(true);
             outToServer = new DataOutputStream(outputSocket.getOutputStream());
         } catch (ConnectException e) {
             //e.printStackTrace();
