@@ -1,36 +1,33 @@
 package json;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class ConfigParser extends JSONParser {
     private FileReader fileReader;
-    private JSONObject parsedObject;
+    private JSONObject parsedConfig;
 
-    public ConfigParser(String pathToJSONFile) {
-        super();
+    public ConfigParser(String pathToJSONFile){
         try {
             fileReader = new FileReader(pathToJSONFile);
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            System.err.println("Config file not Found");
         }
     }
 
     public ApplicationConfig parse() {
         try {
-            parsedObject = (JSONObject) this.parse(fileReader);
+            parsedConfig = (JSONObject) super.parse(fileReader);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return new ApplicationConfig(parsedObject);
+        return new ApplicationConfig(parsedConfig);
     }
 }

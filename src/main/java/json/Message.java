@@ -12,7 +12,6 @@ public class Message {
         if (clockValue == null) {
             throw new NullPointerException();
         }
-
         jsonMsg = new JSONObject();
         jsonMsg.put("clock", clockValue);
         jsonMsg.put("type", type.toString());

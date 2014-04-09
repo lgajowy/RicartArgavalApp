@@ -3,8 +3,6 @@ package json;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.util.ArrayList;
-
 public class ApplicationConfig {
 
     private JSONObject parsedConfig;

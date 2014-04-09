@@ -7,7 +7,7 @@ import org.json.simple.parser.ParseException;
 
 
 public class MessageParser extends JSONParser {
-    private JSONObject parsedObject;
+    private JSONObject parsedMessage;
     private String textToBeParsed;
 
     public MessageParser(String textToBeParsed) {
@@ -17,7 +17,7 @@ public class MessageParser extends JSONParser {
 
     public Message parse() {
         try {
-            parsedObject = (JSONObject) parse(textToBeParsed);
+            parsedMessage = (JSONObject) super.parse(textToBeParsed);
 
             Long clockValue = getClockValue();
             String messageType = getMessageType();
@@ -34,10 +34,10 @@ public class MessageParser extends JSONParser {
     }
 
     private Long getClockValue() {
-        return (Long) parsedObject.get("clock");
+        return (Long) parsedMessage.get("clock");
     }
 
     private String getMessageType() {
-        return (String) parsedObject.get("type");
+        return (String) parsedMessage.get("type");
     }
 }
