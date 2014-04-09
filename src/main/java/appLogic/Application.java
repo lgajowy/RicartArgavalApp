@@ -1,5 +1,6 @@
 package appLogic;
 
+import json.ApplicationConfig;
 import json.ConfigParser;
 import networking.InputConnectionManager;
 import networking.OutputConnectionManager;
@@ -82,6 +83,7 @@ public class Application {
     public static void main(String[] args) {
         parseInputArguments(args);
         ConfigParser configurationParser = new ConfigParser(args[0]);
+        ApplicationConfig appConfiguration = configurationParser.parse();
 
         DeferredMessagesManager msgManager = new DeferredMessagesManager();
         OkMessageManagerForEnteringState okRecorder = new OkMessageManagerForEnteringState();
@@ -90,10 +92,10 @@ public class Application {
 
         try {
 
-            thisNodeIPAddress = InetAddress.getByName(configurationParser.getThisNodeAddress());
-            thisNodePort = getIntOrNull(configurationParser.getThisNodePort());
-            occupationTime = getIntOrNull(configurationParser.getCriticalSectionOccupationTime());
-            JSONArray addressesAndPorts = (JSONArray) configurationParser.getOtherNodesAddressesAndPorts();
+            thisNodeIPAddress = InetAddress.getByName(appConfiguration.getThisNodeAddress());
+            thisNodePort = getIntOrNull(appConfiguration.getThisNodePort());
+            occupationTime = getIntOrNull(appConfiguration.getCriticalSectionOccupationTime());
+            JSONArray addressesAndPorts = (JSONArray) appConfiguration.getOtherNodesAddressesAndPorts();
             totalNumberOfNeighborNodes = addressesAndPorts.size();
 
             //todo: Oooglayy hack. ;/

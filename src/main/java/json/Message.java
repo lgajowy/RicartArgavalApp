@@ -6,9 +6,13 @@ import org.json.simple.JSONObject;
 
 public class Message {
 
-    JSONObject jsonMsg;
+    private JSONObject jsonMsg;
 
     public Message(Long clockValue, MessageType type) {
+        if (clockValue == null) {
+            throw new NullPointerException();
+        }
+
         jsonMsg = new JSONObject();
         jsonMsg.put("clock", clockValue);
         jsonMsg.put("type", type.toString());

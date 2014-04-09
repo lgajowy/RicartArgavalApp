@@ -3,6 +3,7 @@ package networking;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ConnectException;
+import java.net.NoRouteToHostException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -41,6 +42,9 @@ public class MessageSender implements Runnable {
             }
             System.err.println("Trying to connect to address: " + ipAddress + " on port: " + port);
             establishConnection(ipAddress, port);
+        } catch (NoRouteToHostException ex) {
+            System.out.println("no such address in network: " + address);
+
         } catch (UnknownHostException e) {
             System.err.println("Host unknown! Address: " + ipAddress + " port: " + port);
             e.printStackTrace();
@@ -58,7 +62,7 @@ public class MessageSender implements Runnable {
                 establishConnection(address, port);
                 System.err.println("Repeating message");
                 writeMessageToClient(message);
-                writeMessageToClient(message);  //TODO: To make sure that it went. ;/ FIXME
+                //writeMessageToClient(message);  //TODO: To make sure that it went. ;/ FIXME
             }
         } else {
             System.err.println("No output connection");

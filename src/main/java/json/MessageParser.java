@@ -1,7 +1,10 @@
 package json;
 
+import json.utils.MessageType;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 
 public class MessageParser extends JSONParser {
     private JSONObject parsedObject;
@@ -22,11 +25,11 @@ public class MessageParser extends JSONParser {
             if (null != clockValue && null != messageType) {
                 return new Message(clockValue, messageType);
             } else {
-                return null;
+                return new Message(-1L, MessageType.unknown);
             }
-        } catch (Exception e) {
+        } catch (ParseException e) {
             System.err.println("This text is not JSON (or bad format)!!!");
-            return null;
+            return new Message(-1L, MessageType.unknown);
         }
     }
 

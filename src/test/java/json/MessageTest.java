@@ -1,33 +1,53 @@
 package json;
 
 import json.utils.MessageType;
-import junit.framework.TestCase;
+import org.junit.Before;
 import org.junit.Test;
 
-public class MessageTest extends TestCase {
+import static org.assertj.core.api.Assertions.assertThat;
 
-    private static final Long CLOCK_VALUE = new Long(1);
-    private static final MessageType OK = MessageType.ok;
+public class MessageTest {
 
+    final Long clockValue = 10L;
+    final String validMessageType = "ok";
+    final String invalidValidMessageType = "blablabla";
     private Message msg;
 
+    @Before
     public void setUp() throws Exception {
-        super.setUp();
-        msg = new Message(CLOCK_VALUE, OK);
+        msg = new Message(clockValue, validMessageType);
+
     }
 
     @Test
-    public void testGetClockValue() throws Exception {
-        assertEquals(CLOCK_VALUE, msg.getClockValue());
+    public void shouldGetProperClockValue() throws Exception {
+        assertThat(msg.getClockValue()).isEqualTo(clockValue);
     }
 
     @Test
-    public void testGetMessageType() throws Exception {
-        assertEquals(OK, msg.getMessageType());
+    public void shouldThrowNullPointerExceptionsWhenClockValueIsNull() throws Exception {
+        try {
+            new Message(null, MessageType.unknown);
+        } catch (NullPointerException ex) {
+            assertThat(ex).isNotNull();
+        }
     }
 
     @Test
-    public void testToString() {
-        assertEquals("{\"clock\":1,\"type\":\"ok\"}", msg.toString());
+    public void shouldGetOkMessageType() throws Exception {
+        assertThat(msg.getMessageType()).isEqualTo(MessageType.ok);
+    }
+
+    @Test
+    public void shouldGetUnknownMessageTypeWhenTypeIsInvalid() throws Exception {
+        msg = new Message(0L, invalidValidMessageType);
+
+        assertThat(msg.getMessageType()).isEqualTo(MessageType.unknown);
+    }
+
+    @Test
+    public void shouldReturnStringJSON() throws Exception {
+        assertThat(msg.toString()).isEqualTo("{\"clock\":10,\"type\":\"ok\"}");
+
     }
 }

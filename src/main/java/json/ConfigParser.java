@@ -10,39 +10,27 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class ConfigParser extends JSONParser {
+    private FileReader fileReader;
     private JSONObject parsedObject;
-    private JSONObject thisNodeAddressAndPort;
 
     public ConfigParser(String pathToJSONFile) {
         super();
         try {
-            parsedObject = (JSONObject) this.parse(new FileReader(pathToJSONFile));
-            setThisNodeAddressAndPort();
+            fileReader = new FileReader(pathToJSONFile);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ApplicationConfig parse() {
+        try {
+            parsedObject = (JSONObject) this.parse(fileReader);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        return new ApplicationConfig(parsedObject);
     }
-
-    public Long getCriticalSectionOccupationTime() {
-        return (Long) parsedObject.get("occupationTime");
-    }
-
-    public ArrayList<String> getOtherNodesAddressesAndPorts() {
-        return (JSONArray) parsedObject.get("addressesAndPorts");
-    }
-
-    private void setThisNodeAddressAndPort() {
-        thisNodeAddressAndPort = (JSONObject) parsedObject.get("thisNodeAddressAndPort");
-    }
-
-    public String getThisNodeAddress() {
-        return (String) thisNodeAddressAndPort.get("address");
-    }
-
-    public Long getThisNodePort() {
-        return (Long) thisNodeAddressAndPort.get("port");
-    }
-
 }
